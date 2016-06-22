@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vulkaninfo", "Vulkaninfo\Vulkaninfo.csproj", "{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug - Tanagra|Any CPU = Debug - Tanagra|Any CPU
+		Debug - VulkanSharp|Any CPU = Debug - VulkanSharp|Any CPU
+		Release - Tanagra|Any CPU = Release - Tanagra|Any CPU
+		Release - VulkanSharp|Any CPU = Release - VulkanSharp|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Debug - Tanagra|Any CPU.ActiveCfg = Debug - Tanagra|Any CPU
+		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Debug - Tanagra|Any CPU.Build.0 = Debug - Tanagra|Any CPU
+		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug - VulkanSharp|Any CPU
+		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Debug - VulkanSharp|Any CPU.Build.0 = Debug - VulkanSharp|Any CPU
+		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Release - Tanagra|Any CPU.ActiveCfg = Release - Tanagra|Any CPU
+		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Release - Tanagra|Any CPU.Build.0 = Release - Tanagra|Any CPU
+		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Release - VulkanSharp|Any CPU.ActiveCfg = Release - VulkanSharp|Any CPU
+		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Release - VulkanSharp|Any CPU.Build.0 = Release - VulkanSharp|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
