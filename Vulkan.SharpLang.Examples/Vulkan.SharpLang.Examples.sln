@@ -1,26 +1,88 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vulkaninfo", "Vulkaninfo\Vulkaninfo.csproj", "{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Instance", "Instance\Instance.csproj", "{AC417B1D-46C7-460D-A113-9616996A941A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesPlatform", "SamplesPlatform\SamplesPlatform.csproj", "{181174FE-B29B-40B4-B45F-BAA16A89A962}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enumerate", "Enumerate\Enumerate.csproj", "{EAF55693-37F9-4257-A2DA-9E36E0D902A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device", "Device\Device.csproj", "{7E67E587-5991-4AC5-A8B9-0BA97474A785}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - Tanagra|Any CPU = Debug - Tanagra|Any CPU
 		Debug - VulkanSharp|Any CPU = Debug - VulkanSharp|Any CPU
+		Debug|Any CPU = Debug|Any CPU
 		Release - Tanagra|Any CPU = Release - Tanagra|Any CPU
 		Release - VulkanSharp|Any CPU = Release - VulkanSharp|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Debug - Tanagra|Any CPU.ActiveCfg = Debug - Tanagra|Any CPU
 		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Debug - Tanagra|Any CPU.Build.0 = Debug - Tanagra|Any CPU
 		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug - VulkanSharp|Any CPU
 		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Debug - VulkanSharp|Any CPU.Build.0 = Debug - VulkanSharp|Any CPU
+		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Debug|Any CPU.ActiveCfg = Debug - VulkanSharp|Any CPU
+		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Debug|Any CPU.Build.0 = Debug - VulkanSharp|Any CPU
 		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Release - Tanagra|Any CPU.ActiveCfg = Release - Tanagra|Any CPU
 		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Release - Tanagra|Any CPU.Build.0 = Release - Tanagra|Any CPU
 		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Release - VulkanSharp|Any CPU.ActiveCfg = Release - VulkanSharp|Any CPU
 		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Release - VulkanSharp|Any CPU.Build.0 = Release - VulkanSharp|Any CPU
+		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Release|Any CPU.ActiveCfg = Release - VulkanSharp|Any CPU
+		{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}.Release|Any CPU.Build.0 = Release - VulkanSharp|Any CPU
+		{AC417B1D-46C7-460D-A113-9616996A941A}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC417B1D-46C7-460D-A113-9616996A941A}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{AC417B1D-46C7-460D-A113-9616996A941A}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC417B1D-46C7-460D-A113-9616996A941A}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{AC417B1D-46C7-460D-A113-9616996A941A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC417B1D-46C7-460D-A113-9616996A941A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC417B1D-46C7-460D-A113-9616996A941A}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{AC417B1D-46C7-460D-A113-9616996A941A}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{AC417B1D-46C7-460D-A113-9616996A941A}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{AC417B1D-46C7-460D-A113-9616996A941A}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{AC417B1D-46C7-460D-A113-9616996A941A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC417B1D-46C7-460D-A113-9616996A941A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{181174FE-B29B-40B4-B45F-BAA16A89A962}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{181174FE-B29B-40B4-B45F-BAA16A89A962}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{181174FE-B29B-40B4-B45F-BAA16A89A962}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{181174FE-B29B-40B4-B45F-BAA16A89A962}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{181174FE-B29B-40B4-B45F-BAA16A89A962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{181174FE-B29B-40B4-B45F-BAA16A89A962}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{181174FE-B29B-40B4-B45F-BAA16A89A962}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{181174FE-B29B-40B4-B45F-BAA16A89A962}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{181174FE-B29B-40B4-B45F-BAA16A89A962}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{181174FE-B29B-40B4-B45F-BAA16A89A962}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{181174FE-B29B-40B4-B45F-BAA16A89A962}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{181174FE-B29B-40B4-B45F-BAA16A89A962}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAF55693-37F9-4257-A2DA-9E36E0D902A1}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAF55693-37F9-4257-A2DA-9E36E0D902A1}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{EAF55693-37F9-4257-A2DA-9E36E0D902A1}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAF55693-37F9-4257-A2DA-9E36E0D902A1}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{EAF55693-37F9-4257-A2DA-9E36E0D902A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAF55693-37F9-4257-A2DA-9E36E0D902A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAF55693-37F9-4257-A2DA-9E36E0D902A1}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{EAF55693-37F9-4257-A2DA-9E36E0D902A1}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{EAF55693-37F9-4257-A2DA-9E36E0D902A1}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{EAF55693-37F9-4257-A2DA-9E36E0D902A1}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{EAF55693-37F9-4257-A2DA-9E36E0D902A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAF55693-37F9-4257-A2DA-9E36E0D902A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
