@@ -11,11 +11,10 @@ namespace Vulkan.SharpLang.Examples
             SampleInstance sample = new SampleInstance();
             Instance instance = sample.InitInstance("vulkansamples_device");
 
-            PhysicalDevice[] gpus = sample.InitEnumerateDevice();
+            PhysicalDevice gpu = sample.InitEnumerateDevice();
 
-            Debug.Assert(gpus != null && gpus.Length >= 1);
-
-            PhysicalDevice gpu = gpus[0];
+            Debug.Assert(gpu != null);
+            
             QueueFamilyProperties[] queueProps = gpu.GetQueueFamilyProperties();
             Debug.Assert(queueProps != null && queueProps.Length >= 1);
 

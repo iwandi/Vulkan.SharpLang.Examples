@@ -14,7 +14,7 @@ namespace Vulkan.SharpLang.Examples
 
             sample.InitEnumerateDevice();
             Device device = sample.InitDevice();
-            sample.QueueFamilyIndex();
+            sample.InitQueueFamilyIndex();
 
             CommandPoolCreateInfo cmdPoolInfo = new CommandPoolCreateInfo
             {

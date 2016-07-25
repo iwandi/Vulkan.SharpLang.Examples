@@ -1,10 +1,22 @@
 ﻿using System;
 using Vulkan;
+using System.Diagnostics;
 
 namespace Vulkan.SharpLang.Examples
 {
     public class SampleInstance
     {
+        string[] instanceExtensionNames = new string[0];
+
+        public void InitInstanceeExtensionNames()
+        {
+            instanceExtensionNames = new string[]
+            {
+                "VK_KHR_surface",
+                "VK_KHR_win32_surface"
+            };
+        }
+
         Instance instance;
         public Instance Instance {  get { return instance; } }
 
@@ -24,22 +36,43 @@ namespace Vulkan.SharpLang.Examples
             InstanceCreateInfo createInfo = new InstanceCreateInfo
             {
                 ApplicationInfo = appInfo,
+                EnabledExtensionNames = instanceExtensionNames,
             };
 
             instance = new Instance(createInfo);
             return instance;
         }
+        
+        PhysicalDevice gpu;
+        public PhysicalDevice Gpu { get { return gpu; } }
 
-        PhysicalDevice[] gpus;
-        public PhysicalDevice[] Gpus {  get {  return gpus; } }
+        QueueFamilyProperties[] queueProps;
+        PhysicalDeviceMemoryProperties memoryProperties;
+        PhysicalDeviceProperties gpuProps;
 
-        uint graphicsQueueFamilyIndex; // TODO : Set this
+        uint graphicsQueueFamilyIndex;
         public uint GraphicsQueueFamilyIndex {  get { return graphicsQueueFamilyIndex; } }
 
-        public PhysicalDevice[] InitEnumerateDevice()
+        public PhysicalDevice InitEnumerateDevice() 
         {
-            gpus = instance.EnumeratePhysicalDevices();
-            return gpus;
+            PhysicalDevice[] gpus = instance.EnumeratePhysicalDevices();
+            gpu = gpus[0];
+
+            queueProps = gpu.GetQueueFamilyProperties();
+            memoryProperties = gpu.GetMemoryProperties();
+            gpuProps = gpu.GetProperties();
+
+            return gpu;
+        }
+
+        string[] deviceExtensionNames = new string[0];
+
+        public void InitDeviceExtensionNames()
+        {
+            deviceExtensionNames = new string[]
+            {
+                "VK_KHR_swapchain",
+            };
         }
 
         Device device;
@@ -57,17 +90,29 @@ namespace Vulkan.SharpLang.Examples
             DeviceCreateInfo info = new DeviceCreateInfo
             {
                 QueueCreateInfos = new DeviceQueueCreateInfo[] { queueInfo },
-                EnabledLayerNames = new string[0], // TODO Enabled Layers
-                EnabledExtensionNames = new string[0], // TODO Enabled Extentions
+                EnabledLayerNames = new string[0],
+                EnabledExtensionNames = deviceExtensionNames, 
             };
 
-            device = gpus[0].CreateDevice(info);
+            device = gpu.CreateDevice(info);
             return device;
         }
 
-        public void QueueFamilyIndex()
+        public void InitQueueFamilyIndex()
         {
-            // TODO 
+            queueProps = gpu.GetQueueFamilyProperties();
+
+            bool found = false;
+            for(uint i = 0; i < queueProps.Length; i++)
+            {
+                if((queueProps[i].QueueFlags & QueueFlags.Graphics) == QueueFlags.Graphics)
+                {
+                    graphicsQueueFamilyIndex = i;
+                    found = true;
+                    break;
+                }
+            }
+            Debug.Assert(found);
         }
     }
 }
