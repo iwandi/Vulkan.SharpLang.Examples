@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enumerate", "Enumerate\Enum
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device", "Device\Device.csproj", "{7E67E587-5991-4AC5-A8B9-0BA97474A785}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InitCommandBuffer", "InitCommandBuffer\InitCommandBuffer.csproj", "{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - Tanagra|Any CPU = Debug - Tanagra|Any CPU
@@ -83,6 +85,18 @@ Global
 		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
 		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E67E587-5991-4AC5-A8B9-0BA97474A785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3D38CCE-9183-422B-A0F3-BEBBABA9AF6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
