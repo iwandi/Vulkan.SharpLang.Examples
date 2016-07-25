@@ -11,12 +11,12 @@ namespace Vulkaninfo.Tanagra
     {
         public static LayerProperties[] EnumerateInstanceLayerProperties()
         {
-            throw new NotImplementedException();
+            return Vk.EnumerateInstanceLayerProperties();
         }
 
         public static ExtensionProperties[] EnumerateInstanceExtensionProperties(string name)
         {
-            throw new NotImplementedException();
+            return Vk.EnumerateInstanceExtensionProperties(name);
         }
     }
 
@@ -25,54 +25,54 @@ namespace Vulkaninfo.Tanagra
         // Instance
         public static PhysicalDevice[] EnumeratePhysicalDevices(this Instance inst)
         {
-            throw new NotImplementedException();
+            return Vk.EnumeratePhysicalDevices(inst);
         }
 
-        public static void Destroy(this Instance inst, object alloc)
+        public static void Destroy(this Instance inst, AllocationCallbacks alloc)
         {
-            throw new NotImplementedException();
+            Vk.DestroyInstance(inst, alloc);
         }
 
         // PhysicalDevice
 
         public static FormatProperties GetFormatProperties(this PhysicalDevice obj,  Format format)
         {
-            throw new NotImplementedException();
+            return Vk.GetPhysicalDeviceFormatProperties(obj, format);
         }
 
         public static LayerProperties[] EnumerateDeviceLayerProperties(this PhysicalDevice obj)
         {
-            throw new NotImplementedException();
+            return Vk.EnumerateDeviceLayerProperties(obj);
         }
 
         public static ExtensionProperties[] EnumerateDeviceExtensionProperties(this PhysicalDevice obj, string name)
         {
-            throw new NotImplementedException();
+            return Vk.EnumerateDeviceExtensionProperties(obj, name);
         }
 
-        public static Device CreateDevice(this PhysicalDevice obj, DeviceCreateInfo info, object alloc)
+        public static Device CreateDevice(this PhysicalDevice obj, DeviceCreateInfo info, AllocationCallbacks alloc)
         {
-            throw new NotImplementedException();
+            return Vk.CreateDevice(obj, info, alloc);
         }
 
         public static PhysicalDeviceProperties GetProperties(this PhysicalDevice obj)
         {
-            throw new NotImplementedException();
+            return Vk.GetPhysicalDeviceProperties(obj);
         }
 
         public static QueueFamilyProperties[] GetQueueFamilyProperties(this PhysicalDevice obj)
         {
-            throw new NotImplementedException();
+            return Vk.GetPhysicalDeviceQueueFamilyProperties(obj);
         }
 
         public static PhysicalDeviceMemoryProperties GetMemoryProperties(this PhysicalDevice obj)
         {
-            throw new NotImplementedException();
+            return Vk.GetPhysicalDeviceMemoryProperties(obj);
         }
 
         public static PhysicalDeviceFeatures GetFeatures(this PhysicalDevice obj)
         {
-            throw new NotImplementedException();
+            return Vk.GetPhysicalDeviceFeatures(obj);
         }
 
         /*public static void Destroy(this PhysicalDevice obj, object alloc)
@@ -82,9 +82,9 @@ namespace Vulkaninfo.Tanagra
 
         // Device
 
-        public static void Destroy(this Device obj, object alloc)
+        public static void Destroy(this Device obj, AllocationCallbacks alloc)
         {
-            throw new NotImplementedException();
+            Vk.DestroyDevice(obj, alloc);
         }
     }
 }
