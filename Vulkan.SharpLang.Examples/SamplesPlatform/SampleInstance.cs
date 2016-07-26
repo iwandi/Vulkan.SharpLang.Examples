@@ -1,5 +1,6 @@
 ﻿using System;
 using Vulkan;
+using Vulkan.Windows;
 using System.Diagnostics;
 using System.Windows.Forms;
 
@@ -167,8 +168,9 @@ namespace Vulkan.SharpLang.Examples
             window = new Form
             {
                 Name = appShortName,
+                Text = appShortName,
                 Width = (int)width,
-                Height = (int)height,
+                Height = (int)height,                
             };
 
             window.Show();
@@ -180,6 +182,87 @@ namespace Vulkan.SharpLang.Examples
             window.Close();
             window.Dispose();
             window = null;
+        }
+
+        SurfaceKhr surface;
+        SurfaceFormatKhr[] surfFormats;
+        Format format;
+
+        public void InitSwapChainExtension()
+        {
+            Win32SurfaceCreateInfoKhr createInfo = new Win32SurfaceCreateInfoKhr
+            {
+                Hinstance = connection,
+                Hwnd = window.Handle,
+            };
+
+            surface = instance.CreateWin32SurfaceKHR(createInfo);
+
+            // Iterate over each queue to learn whether it supports presenting:
+            bool[] supportsPresent = new bool[QueueCount];
+            for (uint i = 0; i < supportsPresent.Length; i++)
+            {
+                supportsPresent[i] = gpu.GetSurfaceSupportKHR(i, surface);
+            }
+
+            // Search for a graphics queue and a present queue in the array of queue
+            // families, try to find one that supports both
+            uint graphicsQueueNodeIndex = uint.MaxValue;
+            for (uint i = 0; i < QueueCount; i++)
+            {
+                if ((queueProps[i].QueueFlags & QueueFlags.Graphics) == QueueFlags.Graphics &&
+                    supportsPresent[i])
+                {
+                    graphicsQueueNodeIndex = i;
+                    break;
+                }
+            }
+
+            // Generate error if could not find a queue that supports both a graphics
+            // and present
+            if (graphicsQueueNodeIndex == uint.MaxValue)
+            {
+                Console.WriteLine("Could not find a queue that supports both graphics and present");
+                throw new Exception("Could not find a queue that supports both graphics and present");
+            }
+
+            graphicsQueueFamilyIndex = graphicsQueueNodeIndex;
+
+            // Get the list of VkFormats that are supported:
+            surfFormats = gpu.GetSurfaceFormatsKHR(surface);
+
+            // If the format list includes just one entry of VK_FORMAT_UNDEFINED,
+            // the surface has no preferred format.  Otherwise, at least one
+            // supported format will be returned.
+            if (surfFormats.Length == 1 && surfFormats[0].Format == Format.Undefined)
+            {
+                format = Format.B8g8r8a8Unorm;
+            }
+            else
+            {
+                Debug.Assert(surfFormats.Length >= 1);
+                format = surfFormats[0].Format;
+            }
+        }
+
+        public bool MemoryTypeFromProperties(uint typeBits, MemoryPropertyFlags requirementsMask, out uint typeIndex)
+        {
+            // Search memtypes to find first index with those properties
+            for(uint i = 0; i < memoryProperties.MemoryTypeCount; i++)
+            {
+                if ((typeBits & 1) == 1)
+                {
+                    // Type is available, does it match user properties?
+                    if ((memoryProperties.MemoryTypes[i].PropertyFlags & requirementsMask) == requirementsMask)
+                    {
+                        typeIndex = i;
+                        return true;
+                    }
+                }
+                typeBits >>= 1;
+            }
+            typeIndex = 0;
+            return false;
         }
     }
 }

@@ -178,7 +178,7 @@ namespace Vulkan.SharpLang.Examples
             }
 
             /* VULKAN_KEY_END */
-
+            
             /* Clean Up */
             foreach(ImageView view in views)
             {
