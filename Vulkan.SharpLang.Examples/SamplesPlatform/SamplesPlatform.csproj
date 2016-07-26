@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,6 +41,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="Vulkan">
       <HintPath>..\..\ext\VulkanSharp\Vulkan.dll</HintPath>
+    </Reference>
+    <Reference Include="Vulkan.Windows">
+      <HintPath>..\..\ext\VulkanSharp\Vulkan.Windows.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

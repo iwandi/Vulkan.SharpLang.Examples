@@ -1,6 +1,7 @@
 ﻿using System;
 using Vulkan;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace Vulkan.SharpLang.Examples
 {
@@ -37,11 +38,13 @@ namespace Vulkan.SharpLang.Examples
             };
         }
 
+        string appShortName;
         Instance instance;
         public Instance Instance {  get { return instance; } }
 
         public Instance InitInstance(string appShortName)
         {
+            this.appShortName = appShortName;
             uint apiVersion = Version.Make(1, 0, 0);
 
             ApplicationInfo appInfo = new ApplicationInfo
@@ -67,6 +70,8 @@ namespace Vulkan.SharpLang.Examples
         public PhysicalDevice Gpu { get { return gpu; } }
 
         QueueFamilyProperties[] queueProps;
+        public QueueFamilyProperties[] QueueProps {  get { return queueProps; } }
+        public int QueueCount {  get { return queueProps.Length; } }
         PhysicalDeviceMemoryProperties memoryProperties;
         PhysicalDeviceProperties gpuProps;
 
@@ -135,19 +140,46 @@ namespace Vulkan.SharpLang.Examples
             Debug.Assert(found);
         }
 
-        public void InitWindowSize(int width, int height)
+        uint width;
+        public uint Width { get { return width; } }
+        uint height;
+        public uint Height { get { return height; } }
+
+        public void InitWindowSize(uint width, uint height)
         {
-            // TODO 
+            this.width = width;
+            this.height = height;
         }
 
         public void InitConnection()
         {
-            // TODO 
+            // Noting on windows
         }
 
-        public void InitWindow()
+        IntPtr connection;
+        public IntPtr Connection {  get { return connection; } }
+        Form window; // use intPtr or keep using form ?
+
+        public IntPtr InitWindow()
         {
-            // TODO 
+            connection = System.Runtime.InteropServices.Marshal.GetHINSTANCE(this.GetType().Module);
+
+            window = new Form
+            {
+                Name = appShortName,
+                Width = (int)width,
+                Height = (int)height,
+            };
+
+            window.Show();
+            return window.Handle;
+        }
+
+        public void DestroyWindow()
+        {
+            window.Close();
+            window.Dispose();
+            window = null;
         }
     }
 }
