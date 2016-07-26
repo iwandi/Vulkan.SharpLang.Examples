@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InitSwapChain", "InitSwapCh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DepthBuffer", "DepthBuffer\DepthBuffer.csproj", "{2E88B433-A660-4983-9C0F-E8A3BFC9EF4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniformBuffer", "UniformBuffer\UniformBuffer.csproj", "{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - Tanagra|Any CPU = Debug - Tanagra|Any CPU
@@ -125,6 +127,18 @@ Global
 		{2E88B433-A660-4983-9C0F-E8A3BFC9EF4D}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
 		{2E88B433-A660-4983-9C0F-E8A3BFC9EF4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E88B433-A660-4983-9C0F-E8A3BFC9EF4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
