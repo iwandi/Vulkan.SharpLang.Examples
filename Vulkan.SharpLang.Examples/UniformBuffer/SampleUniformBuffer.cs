@@ -18,7 +18,7 @@ namespace Vulkan.SharpLang.Examples
             Device device = sample.InitDevice();
             sample.InitWindowSize(50, 50);
             
-            Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(((float)Math.PI / 180f) *  45f, 1f, 0.1f, 100f); // TODO deg top rad
+            Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(((float)Math.PI / 180f) *  45f, 1f, 0.1f, 100f); 
             Matrix4x4 view = Matrix4x4.CreateLookAt(
                 new Vector3(0f, 3f, 10f), // Camera is at (0,3,10), in World Space
                 new Vector3(0f, 0f, 0f),  // and looks at the origin
@@ -69,9 +69,6 @@ namespace Vulkan.SharpLang.Examples
             device.UnmapMemory(uniformDataMem);
 
             device.BindBufferMemory(uniformDataBuf, uniformDataMem, 0);
-
-            // TODO : Final Mapping ?
-
             /* VULKAN_KEY_END */
 
             device.DestroyBuffer(uniformDataBuf);
