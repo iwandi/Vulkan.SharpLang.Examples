@@ -6,6 +6,26 @@ namespace Vulkan.SharpLang.Examples
 {
     public class SampleInstance
     {
+        class LayerPropertiesInfo 
+        {
+            public Vulkan.LayerProperties Properties;
+            public ExtensionProperties[] Extensions;
+        }
+
+        LayerProperties[] instanceLayerProperties;
+
+        public void InitGlobalLayerProperties()
+        {
+            LayerProperties[] props = Commands.EnumerateInstanceLayerProperties();
+            instanceLayerProperties = new LayerProperties[props.Length];
+            foreach (LayerProperties prop in props)
+            {
+                LayerPropertiesInfo layerProps = new LayerPropertiesInfo();
+                layerProps.Properties = prop;
+                layerProps.Extensions = Commands.EnumerateInstanceExtensionProperties(prop.LayerName);
+            }
+        }
+
         string[] instanceExtensionNames = new string[0];
 
         public void InitInstanceeExtensionNames()
@@ -113,6 +133,21 @@ namespace Vulkan.SharpLang.Examples
                 }
             }
             Debug.Assert(found);
+        }
+
+        public void InitWindowSize(int width, int height)
+        {
+            // TODO 
+        }
+
+        public void InitConnection()
+        {
+            // TODO 
+        }
+
+        public void InitWindow()
+        {
+            // TODO 
         }
     }
 }
