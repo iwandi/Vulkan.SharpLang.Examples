@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vulkaninfo", "Vulkaninfo\Vulkaninfo.csproj", "{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DepthBuffer", "DepthBuffer\DepthBuffer.csproj", "{2E88B433-A660-4983-9C0F-E8A3BFC9EF4D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniformBuffer", "UniformBuffer\UniformBuffer.csproj", "{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DescriptorPipelineLayouts", "DescriptorPipelineLayouts\DescriptorPipelineLayouts.csproj", "{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -139,6 +141,18 @@ Global
 		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
 		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BAEA450-AACE-4EE3-BACF-94D538D88E3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
