@@ -44,6 +44,9 @@
     <Reference Include="Vulkan">
       <HintPath>..\..\ext\VulkanSharp\Vulkan.dll</HintPath>
     </Reference>
+    <Reference Include="Vulkan.Windows">
+      <HintPath>..\..\ext\VulkanSharp\Vulkan.Windows.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SampleInitSwapChain.cs" />
