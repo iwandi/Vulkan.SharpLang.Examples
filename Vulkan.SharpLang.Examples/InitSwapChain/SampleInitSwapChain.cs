@@ -78,13 +78,17 @@ namespace Vulkan.SharpLang.Examples
             PresentModeKhr[] presentModes =  gpu.GetSurfacePresentModesKHR(surface);
 
             Extent2D swapChainExtend = new Extent2D();
-            if(surfCapabilities.CurrentExtent.Width == uint.MaxValue)
+            // width and height are either both -1, or both not -1.
+            if (surfCapabilities.CurrentExtent.Width == uint.MaxValue)
             {
+                // If the surface size is undefined, the size is set to
+                // the size of the images requested.
                 swapChainExtend.Width = sample.Width;
                 swapChainExtend.Height = sample.Height;
             }
             else
             {
+                // If the surface size is defined, the swap chain size must match
                 swapChainExtend = surfCapabilities.CurrentExtent;
             }
 
@@ -147,8 +151,8 @@ namespace Vulkan.SharpLang.Examples
 
             SwapchainKhr swapChain = device.CreateSwapchainKHR(swapChainInfo);
             Image[] swapChainImages = device.GetSwapchainImagesKHR(swapChain);
-            ImageView[] views = new ImageView[swapChainImages.Length];
 
+            ImageView[] views = new ImageView[swapChainImages.Length];
             for (uint i = 0; i < swapChainImages.Length; i++)
             {
                 ImageViewCreateInfo colorImageView = new ImageViewCreateInfo
