@@ -29,13 +29,20 @@ namespace Vulkan.SharpLang.Examples
         }
 
         string[] instanceExtensionNames = new string[0];
+        string[] instanceLayerNames = new string[0];
 
         public void InitInstanceeExtensionNames()
         {
             instanceExtensionNames = new string[]
             {
                 "VK_KHR_surface",
-                "VK_KHR_win32_surface"
+                "VK_KHR_win32_surface",
+                "VK_EXT_debug_report",
+            };
+
+            instanceLayerNames = new string[]
+            {
+                "VK_LAYER_LUNARG_standard_validation",
             };
         }
 
@@ -61,6 +68,7 @@ namespace Vulkan.SharpLang.Examples
             {
                 ApplicationInfo = appInfo,
                 EnabledExtensionNames = instanceExtensionNames,
+                EnabledLayerNames = instanceLayerNames,
             };
 
             instance = new Instance(createInfo);
@@ -92,12 +100,18 @@ namespace Vulkan.SharpLang.Examples
         }
 
         string[] deviceExtensionNames = new string[0];
+        string[] deviceLayerNames = new string[0];
 
         public void InitDeviceExtensionNames()
         {
             deviceExtensionNames = new string[]
             {
                 "VK_KHR_swapchain",
+            };
+
+            deviceLayerNames = new string[]
+            {
+                "VK_LAYER_LUNARG_standard_validation",
             };
         }
 
@@ -116,7 +130,7 @@ namespace Vulkan.SharpLang.Examples
             DeviceCreateInfo info = new DeviceCreateInfo
             {
                 QueueCreateInfos = new DeviceQueueCreateInfo[] { queueInfo },
-                EnabledLayerNames = new string[0],
+                EnabledLayerNames = deviceLayerNames,
                 EnabledExtensionNames = deviceExtensionNames, 
             };
 
@@ -497,19 +511,45 @@ namespace Vulkan.SharpLang.Examples
             depthView = device.CreateImageView(viewInfo);
         }
 
-        public void InitCommandPool()
-        {
+        CommandPool cmdPool;
 
+        public CommandPool InitCommandPool()
+        {
+            CommandPoolCreateInfo cmdPoolInfo = new CommandPoolCreateInfo
+            {
+                QueueFamilyIndex = graphicsQueueFamilyIndex,
+                Flags = CommandPoolCreateFlags.ResetCommandBuffer,
+            };
+
+            cmdPool = device.CreateCommandPool(cmdPoolInfo);
+            return cmdPool;
         }
 
-        public void InitCommandBuffer()
-        {
+        CommandBuffer cmd;
 
+        public CommandBuffer InitCommandBuffer()
+        {
+            CommandBufferAllocateInfo cmdInfo = new CommandBufferAllocateInfo
+            {
+                CommandPool = cmdPool,
+                Level = CommandBufferLevel.Primary,
+                CommandBufferCount = 1,
+            };
+
+            CommandBuffer[] buffers =  device.AllocateCommandBuffers(cmdInfo);
+            cmd = buffers[0];
+            return cmd;
         }
 
         public void ExecuteBeginCommandBuffer()
         {
+            CommandBufferBeginInfo cmdBufInfo = new CommandBufferBeginInfo
+            {
+                Flags = 0,
+                InheritanceInfo = new CommandBufferInheritanceInfo(),
+            };
 
+            cmd.Begin(cmdBufInfo);
         }
 
         public bool MemoryTypeFromProperties(uint typeBits, MemoryPropertyFlags requirementsMask, out uint typeIndex)
@@ -534,7 +574,69 @@ namespace Vulkan.SharpLang.Examples
 
         public void SetImageLayout(Image image, ImageAspectFlags aspectMask, ImageLayout oldImageLayout, ImageLayout newImageLayout)
         {
+            ImageMemoryBarrier imageMemoryBarrier = new ImageMemoryBarrier
+            {
+                SrcAccessMask = 0,
+                DstAccessMask = 0,
+                OldLayout = oldImageLayout,
+                NewLayout = newImageLayout,
+                SrcQueueFamilyIndex = 0,
+                DstQueueFamilyIndex = 0,
+                Image = image,
+                SubresourceRange = new ImageSubresourceRange
+                {
+                    AspectMask = aspectMask,
+                    BaseMipLevel = 0,
+                    LevelCount = 1,
+                    BaseArrayLayer = 0,
+                    LayerCount = 1,
+                },
+            };
 
+            if(oldImageLayout == ImageLayout.ColorAttachmentOptimal)
+            {
+                imageMemoryBarrier.SrcAccessMask = AccessFlags.ColorAttachmentWrite;
+            }
+
+            if(newImageLayout == ImageLayout.TransferDstOptimal)
+            {
+                imageMemoryBarrier.DstAccessMask = AccessFlags.TransferWrite;
+            }
+
+            if(newImageLayout == ImageLayout.TransferSrcOptimal)
+            {
+                imageMemoryBarrier.DstAccessMask = AccessFlags.TransferRead;
+            }
+
+            if(oldImageLayout == ImageLayout.TransferDstOptimal)
+            {
+                imageMemoryBarrier.SrcAccessMask = AccessFlags.TransferWrite;
+            }
+
+            if(oldImageLayout == ImageLayout.Preinitialized)
+            {
+                imageMemoryBarrier.SrcAccessMask = AccessFlags.HostWrite;
+            }
+
+            if(newImageLayout == ImageLayout.ShaderReadOnlyOptimal)
+            {
+                imageMemoryBarrier.DstAccessMask = AccessFlags.ShaderRead;
+            }
+
+            if(newImageLayout == ImageLayout.ColorAttachmentOptimal)
+            {
+                imageMemoryBarrier.DstAccessMask = AccessFlags.ColorAttachmentWrite;
+            }
+
+            if(newImageLayout == ImageLayout.DepthStencilAttachmentOptimal)
+            {
+                imageMemoryBarrier.DstAccessMask = AccessFlags.DepthStencilAttachmentWrite;
+            }
+
+            PipelineStageFlags srcStages = PipelineStageFlags.TopOfPipe;
+            PipelineStageFlags destStages = PipelineStageFlags.TopOfPipe;
+
+            cmd.CmdPipelineBarrier(srcStages, destStages, (DependencyFlags)0, null, null, new ImageMemoryBarrier[] { imageMemoryBarrier });
         }
     }
 }
