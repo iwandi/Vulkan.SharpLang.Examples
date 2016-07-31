@@ -8,6 +8,8 @@ namespace Vulkan.SharpLang.Examples
 {
     public class SampleInstance
     {
+        const ulong FENCE_TIMEOUT =  100000000;
+
         class LayerPropertiesInfo 
         {
             public Vulkan.LayerProperties Properties;
@@ -202,6 +204,8 @@ namespace Vulkan.SharpLang.Examples
         SurfaceFormatKhr[] surfFormats;
         Format format;
 
+        public Format Format { get { return format; } }
+
         public void InitSwapChainExtension()
         {
             Win32SurfaceCreateInfoKhr createInfo = new Win32SurfaceCreateInfoKhr
@@ -259,7 +263,7 @@ namespace Vulkan.SharpLang.Examples
             }
         }
 
-        class SwapChainBuffer
+        public class SwapChainBuffer
         {
             public Image Image;
             public ImageView view;
@@ -268,6 +272,10 @@ namespace Vulkan.SharpLang.Examples
         SwapchainKhr swapChain;
         SwapChainBuffer[] buffers;
         uint currentBuffer;
+
+        public SwapchainKhr SwapChain { get { return swapChain; } }
+        public SwapChainBuffer[] Buffers { get { return buffers; } }
+        public uint CurrentBuffer { get { return currentBuffer; } set { currentBuffer = value; } }
 
         public SwapchainKhr InitSwapChain()
         {
@@ -384,9 +392,18 @@ namespace Vulkan.SharpLang.Examples
 
                 buffers[i] = scBuffer;
             }
-
+            
             currentBuffer = 0;
             return swapChain;
+        }
+
+        public void DestroySwapChain()
+        {
+            foreach(SwapChainBuffer buffer in buffers)
+            {
+                device.DestroyImageView(buffer.view);
+            }
+            device.DestroySwapchainKHR(swapChain);
         }
 
         Queue queue;
@@ -402,6 +419,8 @@ namespace Vulkan.SharpLang.Examples
         Image depthImage;
         ImageView depthView;
         DeviceMemory depthMem;
+
+        public Format DepthFormat {  get { return depthFormat; } }
 
         public void InitDepthBuffer()
         {
@@ -441,7 +460,7 @@ namespace Vulkan.SharpLang.Examples
                 },
                 MipLevels = 1,
                 ArrayLayers = 1,
-                Samples = SampleCountFlags.Count4, // TODO NUM_SAMPLES ???
+                Samples = SampleCountFlags.Count1,
                 InitialLayout = ImageLayout.Undefined,
                 Usage = ImageUsageFlags.DepthStencilAttachment,
                 QueueFamilyIndices = new uint[0],
@@ -489,6 +508,7 @@ namespace Vulkan.SharpLang.Examples
             /* Create image */
             depthImage = device.CreateImage(imageInfo);
             MemoryRequirements memReqs = device.GetImageMemoryRequirements(depthImage);
+            memAlloc.AllocationSize = memReqs.Size;
 
             /* Use the memory properties to determine the type of memory required */
             uint memoryTypeIndex;
@@ -511,6 +531,13 @@ namespace Vulkan.SharpLang.Examples
             depthView = device.CreateImageView(viewInfo);
         }
 
+        public void DestroyDepthBuffer()
+        {
+            device.DestroyImageView(depthView);
+            device.DestroyImage(depthImage);
+            device.FreeMemory(depthMem);
+        }
+
         CommandPool cmdPool;
 
         public CommandPool InitCommandPool()
@@ -523,6 +550,11 @@ namespace Vulkan.SharpLang.Examples
 
             cmdPool = device.CreateCommandPool(cmdPoolInfo);
             return cmdPool;
+        }
+
+        public void DestroyCommandPool()
+        {
+            device.DestroyCommandPool(cmdPool);
         }
 
         CommandBuffer cmd;
@@ -541,6 +573,11 @@ namespace Vulkan.SharpLang.Examples
             return cmd;
         }
 
+        public void DestroyCommandBuffer()
+        {
+            device.FreeCommandBuffers(cmdPool, new CommandBuffer[] { cmd });
+        }
+
         public void ExecuteBeginCommandBuffer()
         {
             CommandBufferBeginInfo cmdBufInfo = new CommandBufferBeginInfo
@@ -550,6 +587,53 @@ namespace Vulkan.SharpLang.Examples
             };
 
             cmd.Begin(cmdBufInfo);
+        }
+
+        public void ExecuteEndCommandBuffer()
+        {
+            cmd.End();
+        }
+
+        public void ExecuteQueueCommandBuffer()
+        {
+            FenceCreateInfo fenceInfo = new FenceCreateInfo
+            {
+            };
+            Fence drawFence = device.CreateFence(fenceInfo);
+
+            PipelineStageFlags pipeStageFlags = PipelineStageFlags.BottomOfPipe;
+            SubmitInfo submitInfo = new SubmitInfo
+            {
+                WaitSemaphores = new Semaphore[0],
+                WaitDstStageMask = new PipelineStageFlags[] { pipeStageFlags },
+                CommandBuffers =  new CommandBuffer[] { cmd },
+                SignalSemaphores = new Semaphore[0],                
+            };
+
+            queue.Submit(new SubmitInfo[] { submitInfo }, drawFence);
+
+            Result res = Result.Timeout;
+            while(res == Result.Timeout)
+            {
+                try
+                {
+                    device.WaitForFences(new Fence[] { drawFence }, true, FENCE_TIMEOUT);
+                    break;
+                }
+                catch (ResultException re)
+                {
+                    if (re.Result == Result.Timeout)
+                    {
+                        res = re.Result;
+                    }
+                    else if( re.Result != Result.Success)
+                    {
+                        throw new Exception("Failed at device.WaitForFences", re);
+                    }
+                }
+            }
+
+            device.DestroyFence(drawFence);
         }
 
         public bool MemoryTypeFromProperties(uint typeBits, MemoryPropertyFlags requirementsMask, out uint typeIndex)
