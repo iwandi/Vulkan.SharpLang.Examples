@@ -66,23 +66,44 @@ namespace Vulkaninfo
             };
         }
 
+		IEnumerable<Format> ListFormats(AppDev dev)
+		{
+			bool pvrtc = false;
+			foreach(ExtensionProperties extensionProp in dev.Gpu.DeviceExtensions)
+			{
+				if(extensionProp.ExtensionName == "VK_IMG_format_pvrtc")
+				{
+					pvrtc = true;
+					break;
+				}
+			}
+
+            foreach (Format f in Enum.GetValues(typeof(Format)))
+			{
+				int fi = (int)f;
+				if(fi >= (int)Format.Pvrtc12BppUnormBlockImg && fi <= (int)Format.Pvrtc24BppSrgbBlockImg)
+				{
+					if (pvrtc)
+					{
+						yield return f;
+					}
+				}
+				else
+				{
+					yield return f;
+				}
+			}
+		}
+
         void AppDevInitFormats(AppDev dev)
         {
-            int formatCount = 0;
-            foreach(Format f in Enum.GetValues(typeof(Format)))
-            { 
-                int fi = (int)f;
-                formatCount = formatCount < fi ? fi : formatCount;
-            }
-
-            FormatProperties[] formatList = new FormatProperties[formatCount+1];
-            foreach (Format f in Enum.GetValues(typeof(Format)))
+			Dictionary<Format, FormatProperties> formatList = new Dictionary<Format, FormatProperties>();
+            foreach (Format f in ListFormats(dev))
             {
-                int index = (int)f;
-                formatList[index] = (dev.Gpu.Obj.GetFormatProperties(f));
+				formatList.Add(f, dev.Gpu.Obj.GetFormatProperties(f));
             }
 
-            dev.FormatProbs = formatList;
+			dev.FormatProbs = formatList;
         }
 
         void ExtractVersion(uint version, out uint major, out uint minor, out uint patch)
@@ -313,7 +334,7 @@ namespace Vulkaninfo
 
         void AppDevDumpFormatProps(AppDev dev, Format fmt, StreamWriter output)
         {
-            FormatProperties props = dev.FormatProbs[(int)fmt];
+            FormatProperties props = dev.FormatProbs[fmt];
 
             Feature[] features = new Feature[3];
             features[0].Name = "linearTiling   FormatFeatureFlags";
@@ -348,7 +369,7 @@ namespace Vulkaninfo
 
         void AppDevDump(AppDev dev, StreamWriter output)
         {
-            foreach (Format fmt in Enum.GetValues(typeof(Format)))
+            foreach (Format fmt in ListFormats(dev))
             {
                 AppDevDumpFormatProps(dev, fmt, output);
             }
@@ -378,13 +399,13 @@ namespace Vulkaninfo
             output.WriteLine("\tdepthBounds                             = {0}", features.DepthBounds);
             output.WriteLine("\twideLines                               = {0}", features.WideLines);
             output.WriteLine("\tlargePoints                             = {0}", features.LargePoints);
-            output.WriteLine("\ttextureCompressionETC2                  = {0}", features.TextureCompressionETC2);
+            output.WriteLine("\ttextureCompressionETC2                  = {0}", features.TextureCompressionEtc2);
 #if VulkanSharp 
-            output.WriteLine("\ttextureCompressionASTC_LDR              = {0}", features.TextureCompressionASTCLdr);
+            output.WriteLine("\ttextureCompressionASTC_LDR              = {0}", features.TextureCompressionAstcLdr);
 #elif Tanagra
             output.WriteLine("\ttextureCompressionASTC_LDR              = {0}", features.TextureCompressionASTC_LDR);
 #endif
-            output.WriteLine("\ttextureCompressionBC                    = {0}", features.TextureCompressionBC);
+            output.WriteLine("\ttextureCompressionBC                    = {0}", features.TextureCompressionBc);
             output.WriteLine("\tocclusionQueryPrecise                   = {0}", features.OcclusionQueryPrecise);
             output.WriteLine("\tpipelineStatisticsQuery                 = {0}", features.PipelineStatisticsQuery);
             output.WriteLine("\tvertexSideEffects                       = {0}", features.VertexPipelineStoresAndAtomics);
@@ -585,8 +606,8 @@ namespace Vulkaninfo
             output.WriteLine("===========================");
             output.WriteLine("\tapiVersion     = {0}", props.ApiVersion);
             output.WriteLine("\tdriverVersion  = {0}", props.DriverVersion);
-            output.WriteLine("\tvendorID       = 0x{0:x}", props.VendorID);
-            output.WriteLine("\tdeviceID       = 0x{0:x}", props.DeviceID);
+            output.WriteLine("\tvendorID       = 0x{0:x}", props.VendorId);
+            output.WriteLine("\tdeviceID       = 0x{0:x}", props.DeviceId);
             output.WriteLine("\tdeviceType     = {0}", GetVkName(props.DeviceType.ToString(), "", ""));
             output.WriteLine("\tdeviceName     = {0}", props.DeviceName);
 
@@ -803,7 +824,8 @@ namespace Vulkaninfo
         {
             public AppGpu Gpu;
             public Device Obj;
-            public FormatProperties[] FormatProbs; /*VK_FORMAT_RANGE_SIZE*/
+			//public FormatProperties[] FormatProbs; /*VK_FORMAT_RANGE_SIZE*/
+			public Dictionary<Format, FormatProperties> FormatProbs;
         }
 
         struct Feature
