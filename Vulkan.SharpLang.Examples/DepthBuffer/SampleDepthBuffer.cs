@@ -77,7 +77,7 @@ namespace Vulkan.SharpLang.Examples
 
             ImageViewCreateInfo viewInfo = new ImageViewCreateInfo
             {
-                Image = new Image(), // this creates a null handle
+                Image = null,
                 Format = depthFormat,
                 Components = new ComponentMapping
                 {

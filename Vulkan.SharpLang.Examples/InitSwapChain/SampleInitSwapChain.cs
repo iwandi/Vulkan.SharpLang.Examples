@@ -66,7 +66,7 @@ namespace Vulkan.SharpLang.Examples
             // supported format will be returned.
             if(surfFormats.Length == 1 && surfFormats[0].Format == Format.Undefined)
             {
-                format = Format.B8g8r8a8Unorm;
+                format = Format.B8G8R8A8Unorm;
             }
             else
             {
@@ -141,7 +141,7 @@ namespace Vulkan.SharpLang.Examples
                 CompositeAlpha = CompositeAlphaFlagsKhr.Opaque,
                 ImageArrayLayers = 1,
                 PresentMode = swapChainPresentMode,
-                OldSwapchain = new SwapchainKhr(), // this creates a new SwapchainKhr with null pointer
+                OldSwapchain = null,
                 Clipped = true,
                 ImageColorSpace = ColorSpaceKhr.SrgbNonlinear,
                 ImageUsage = ImageUsageFlags.ColorAttachment,

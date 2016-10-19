@@ -254,7 +254,7 @@ namespace Vulkan.SharpLang.Examples
             // supported format will be returned.
             if (surfFormats.Length == 1 && surfFormats[0].Format == Format.Undefined)
             {
-                format = Format.B8g8r8a8Unorm;
+                format = Format.B8G8R8A8Unorm;
             }
             else
             {
@@ -336,17 +336,17 @@ namespace Vulkan.SharpLang.Examples
                 preTransform = surfCapabilities.CurrentTransform;
             }
 
-            SwapchainCreateInfoKhr swapChainInfo = new SwapchainCreateInfoKhr
-            {
-                Surface = surface,
-                MinImageCount = desiredNumberOfSwapChainImages,
-                ImageFormat = format,
-                ImageExtent = swapChainExtend,
-                PreTransform = preTransform,
-                CompositeAlpha = CompositeAlphaFlagsKhr.Opaque,
-                ImageArrayLayers = 1,
-                PresentMode = swapChainPresentMode,
-                OldSwapchain = new SwapchainKhr(), // this creates a new SwapchainKhr with null pointer
+			SwapchainCreateInfoKhr swapChainInfo = new SwapchainCreateInfoKhr
+			{
+				Surface = surface,
+				MinImageCount = desiredNumberOfSwapChainImages,
+				ImageFormat = format,
+				ImageExtent = swapChainExtend,
+				PreTransform = preTransform,
+				CompositeAlpha = CompositeAlphaFlagsKhr.Opaque,
+				ImageArrayLayers = 1,
+				PresentMode = swapChainPresentMode,
+				OldSwapchain = null,
                 Clipped = true,
                 ImageColorSpace = ColorSpaceKhr.SrgbNonlinear,
                 ImageUsage = ImageUsageFlags.ColorAttachment,
@@ -484,7 +484,7 @@ namespace Vulkan.SharpLang.Examples
 
             ImageViewCreateInfo viewInfo = new ImageViewCreateInfo
             {
-                Image = new Image(), // this creates a null handle
+                Image = null,
                 Format = depthFormat,
                 Components = new ComponentMapping
                 {
@@ -602,11 +602,11 @@ namespace Vulkan.SharpLang.Examples
             Fence drawFence = device.CreateFence(fenceInfo);
 
             PipelineStageFlags pipeStageFlags = PipelineStageFlags.BottomOfPipe;
-            SubmitInfo submitInfo = new SubmitInfo
-            {
-                WaitSemaphores = new Semaphore[0],
+			SubmitInfo submitInfo = new SubmitInfo
+			{
+				WaitSemaphores = new Semaphore[0],
                 WaitDstStageMask = new PipelineStageFlags[] { pipeStageFlags },
-                CommandBuffers =  new CommandBuffer[] { cmd },
+                CommandBuffers = new CommandBuffer[] { cmd },
                 SignalSemaphores = new Semaphore[0],                
             };
 

@@ -42,7 +42,7 @@ namespace Vulkan.SharpLang.Examples
             imageAcquiredSemaphore = device.CreateSemaphore(imageAcquiredSemaphoreInfo);
 
             // Acquire the swapchain image in order to set its layout
-            sample.CurrentBuffer = device.AcquireNextImageKHR(swapChain, uint.MaxValue, imageAcquiredSemaphore, new Fence());
+            sample.CurrentBuffer = device.AcquireNextImageKHR(swapChain, uint.MaxValue, imageAcquiredSemaphore, null);
 
             // Set the layout for the color buffer, transitioning it from
             // undefined to an optimal color attachment to make it usable in
