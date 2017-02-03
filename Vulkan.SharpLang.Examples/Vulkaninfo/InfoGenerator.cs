@@ -11,6 +11,11 @@ using Vulkan.Managed;
 using Vulkaninfo.Tanagra;
 #endif
 
+#if VK_USE_PLATFORM_WIN32_KHR
+using System.Windows.Forms;
+using Vulkan.Windows;
+#endif
+
 // TODO : vulkan
 //          - Flag enum same type as in api QueueFlags is int but in api is uint
 //          - Flag enum with null Entry
@@ -318,6 +323,69 @@ namespace Vulkaninfo
 
             // TODO : Check if we need to free some structs
         }
+
+#if VK_USE_PLATFORM_WIN32_KHR
+		void AppCreateWin32Window(AppInstance instance)
+		{
+			instance.Connection = System.Runtime.InteropServices.Marshal.GetHINSTANCE(this.GetType().Module);
+
+			instance.Window = new Form
+			{
+				Name = ApplicationName,
+				Text = ApplicationName,
+				Width = instance.Width,
+				Height = instance.Height,
+			};
+		}
+
+		void AppDestroyWin32Window(AppInstance instance)
+		{
+			instance.Window.Close();
+			instance.Window = null;
+			instance.Connection = IntPtr.Zero;
+		}
+
+		void AppCreateWin32Surface(AppInstance instance)
+		{
+			instance.Surface = instance.Instance.CreateWin32SurfaceKHR(new Win32SurfaceCreateInfoKhr
+			{
+				Hinstance = instance.Connection,
+				Hwnd = instance.Window.Handle,
+			});
+		}
+#endif
+
+		void AppDestroySurface(AppInstance instance)
+		{
+			instance.Instance.DestroySurfaceKHR(instance.Surface);
+			instance.Surface = null;
+		}
+
+		int AppDumpSurfaceFormats(AppInstance instance, AppGpu gpu, StreamWriter output)
+		{
+			SurfaceFormatKhr[] surfaceFormats = gpu.Obj.GetSurfaceFormatsKHR(instance.Surface);
+
+			output.WriteLine("Formats:\t\tcount = {0}", surfaceFormats.Length);
+			foreach (SurfaceFormatKhr surfaceFormat in surfaceFormats)
+			{
+				output.WriteLine("\t{0}", GetVkName(surfaceFormat.Format.ToString()));
+			}
+
+			return surfaceFormats.Length;
+		}
+
+		int AppDumpSurfacePresentModes(AppInstance instance, AppGpu gpu, StreamWriter output)
+		{
+			PresentModeKhr[] presentModes = gpu.Obj.GetSurfacePresentModesKHR(instance.Surface);
+
+			output.WriteLine("Present Modes:\t\tcount = {0}", presentModes.Length);
+			foreach (PresentModeKhr presentMode in presentModes)
+			{
+				output.WriteLine("\t{0}", GetVkName(presentMode.ToString(),"", "_KHR"));
+			}
+
+			return presentModes.Length;
+		}
 
 		static System.Text.StringBuilder s_vkSb = new System.Text.StringBuilder();
 		readonly string[] s_dividersLead = new string[]
@@ -782,11 +850,21 @@ namespace Vulkaninfo
                 output.Write("{0}\t", ident);
                 output.WriteLine("{0,-36}: extension revision {1,2}", extProp.ExtensionName, extProp.SpecVersion);
             }
-
-            //output.WriteLine();
         }
-        
-        void AppGpuDumpQueuProps(AppGpu gpu, uint id, StreamWriter output)
+
+		bool HasExtension(string extensionName, ExtensionProperties[] extensionProperties) 
+		{
+			foreach(ExtensionProperties prop in extensionProperties)
+			{
+				if(prop.ExtensionName == extensionName)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		void AppGpuDumpQueuProps(AppGpu gpu, uint id, StreamWriter output)
         {
             QueueFamilyProperties props = gpu.QueueProps[id];
 
@@ -880,7 +958,7 @@ namespace Vulkaninfo
         public void DumpInfo(StreamWriter output)
         {
 #if VulkanSharp
-            uint apiVersion = Vulkan.Version.Make(1, 0, 30);
+            uint apiVersion = Vulkan.Version.Make(1, 0, 0);
 #elif Tanagra
             uint apiVersion = new Vulkan.Version(1, 0, 0);
 #endif
@@ -931,10 +1009,43 @@ namespace Vulkaninfo
 				}
 				output.WriteLine();
 			}
-			// TODO : Presentable Surface formats
 
-			output.WriteLine("Presentable Surface formats:");
-			output.WriteLine("============================");
+			output.WriteLine("Presentable Surfaces:");
+			output.WriteLine("=====================");
+
+			int format_count = 0;
+			int present_mode_count = 0;
+
+#if VK_USE_PLATFORM_WIN32_KHR
+			const string VK_KHR_WIN32_SURFACE_EXTENSION_NAME = "VK_KHR_win32_surface";
+
+			if (HasExtension(VK_KHR_WIN32_SURFACE_EXTENSION_NAME, instance.Extensions))
+			{
+				AppCreateWin32Window(instance);
+
+				for (uint i = 0; i < gpus.Length; i++)
+				{
+					AppCreateWin32Surface(instance);
+
+					output.WriteLine("GPU id       : {0} ({1})", i, gpus[i].Props.DeviceName);
+					output.WriteLine("Surface type : {0}", VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+					format_count += AppDumpSurfaceFormats(instance, gpus[i], output);
+					present_mode_count += AppDumpSurfacePresentModes(instance, gpus[i], output);
+
+					AppDestroySurface(instance);
+				}
+
+				AppDestroyWin32Window(instance);
+			}
+#endif
+
+			if (format_count <= 0 && present_mode_count <= 0)
+			{
+				output.WriteLine("None found\n");
+			}
+
+			output.WriteLine();
+			output.WriteLine();
 
 			for (uint i = 0; i < objs.Length; i++)
             {
@@ -970,7 +1081,17 @@ namespace Vulkaninfo
             public Instance Instance;
             public LayerExtensionList[] Layers;
             public ExtensionProperties[] Extensions;
-        }
+
+			public int Width;
+			public int Height;
+
+			public SurfaceKhr Surface;
+
+#if VK_USE_PLATFORM_WIN32_KHR
+			public IntPtr Connection;
+			public Form Window;
+#endif
+		}
 
         class LayerExtensionList // layer_extension_list 
         {
