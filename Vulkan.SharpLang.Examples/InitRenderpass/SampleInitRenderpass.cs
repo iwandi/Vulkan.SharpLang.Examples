@@ -110,8 +110,6 @@ namespace Vulkan.SharpLang.Examples
             };
 
             RenderPass renderPass = device.CreateRenderPass(rpInfo);
-            sample.ExecuteEndCommandBuffer();
-            sample.ExecuteQueueCommandBuffer();
             /* VULKAN_KEY_END */
 
             device.DestroyRenderPass(renderPass);
@@ -121,8 +119,9 @@ namespace Vulkan.SharpLang.Examples
             sample.DestroyCommandBuffer();
             sample.DestroyCommandPool();
             device.Destroy();
+			sample.DestroySwapChainExtension();
             sample.DestroyWindow();
             instance.Destroy();
-        }
+		}
     }
 }

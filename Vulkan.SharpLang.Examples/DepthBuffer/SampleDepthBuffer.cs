@@ -127,8 +127,9 @@ namespace Vulkan.SharpLang.Examples
             device.DestroyImage(depthImage);
             device.FreeMemory(depthMem);
             device.Destroy();
+			sample.DestroySwapChainExtension();
             sample.DestroyWindow();
-            instance.Destroy();            
-        }
+            instance.Destroy();
+		}
     }
 }

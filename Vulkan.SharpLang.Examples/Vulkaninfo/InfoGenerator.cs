@@ -958,9 +958,9 @@ namespace Vulkaninfo
         public void DumpInfo(StreamWriter output)
         {
 #if VulkanSharp
-            uint apiVersion = Vulkan.Version.Make(1, 0, 0);
+            uint apiVersion = Vulkan.Version.Make(1, 0, 39);
 #elif Tanagra
-            uint apiVersion = new Vulkan.Version(1, 0, 0);
+            uint apiVersion = new Vulkan.Version(1, 0, 39);
 #endif
 
             DumpHeader(apiVersion, output);
@@ -1015,6 +1015,9 @@ namespace Vulkaninfo
 
 			int format_count = 0;
 			int present_mode_count = 0;
+
+			instance.Width = 512;
+			instance.Width = 512;
 
 #if VK_USE_PLATFORM_WIN32_KHR
 			const string VK_KHR_WIN32_SURFACE_EXTENSION_NAME = "VK_KHR_win32_surface";

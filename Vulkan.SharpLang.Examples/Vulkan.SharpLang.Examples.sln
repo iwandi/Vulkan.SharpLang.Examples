@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vulkaninfo", "Vulkaninfo\Vulkaninfo.csproj", "{49338C6C-CBC6-4D1D-93C9-FFC24998BE5A}"
 EndProject
@@ -24,6 +24,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DescriptorPipelineLayouts", "DescriptorPipelineLayouts\DescriptorPipelineLayouts.csproj", "{EE411EC3-51A9-4B93-A493-A742CE5DFBBE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InitRenderpass", "InitRenderpass\InitRenderpass.csproj", "{58EB33BA-4AF5-4E9F-B98D-8FD467EE7C1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InitShaders", "InitShaders\InitShaders.csproj", "{7AE63318-61F3-4A93-94A1-5719BD80BEB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InitFrameBuffers", "InitFrameBuffers\InitFrameBuffers.csproj", "{D12CC993-6BB9-49F7-881B-0FA4D7468A70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -167,6 +171,30 @@ Global
 		{58EB33BA-4AF5-4E9F-B98D-8FD467EE7C1D}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
 		{58EB33BA-4AF5-4E9F-B98D-8FD467EE7C1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58EB33BA-4AF5-4E9F-B98D-8FD467EE7C1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AE63318-61F3-4A93-94A1-5719BD80BEB1}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AE63318-61F3-4A93-94A1-5719BD80BEB1}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{7AE63318-61F3-4A93-94A1-5719BD80BEB1}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AE63318-61F3-4A93-94A1-5719BD80BEB1}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{7AE63318-61F3-4A93-94A1-5719BD80BEB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AE63318-61F3-4A93-94A1-5719BD80BEB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AE63318-61F3-4A93-94A1-5719BD80BEB1}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{7AE63318-61F3-4A93-94A1-5719BD80BEB1}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{7AE63318-61F3-4A93-94A1-5719BD80BEB1}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{7AE63318-61F3-4A93-94A1-5719BD80BEB1}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{7AE63318-61F3-4A93-94A1-5719BD80BEB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AE63318-61F3-4A93-94A1-5719BD80BEB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

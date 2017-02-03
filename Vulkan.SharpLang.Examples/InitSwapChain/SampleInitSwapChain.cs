@@ -189,7 +189,8 @@ namespace Vulkan.SharpLang.Examples
                 device.DestroyImageView(view);
             }
             device.DestroySwapchainKHR(swapChain);
-            device.Destroy();
+			instance.DestroySurfaceKHR(surface);
+			device.Destroy();
             sample.DestroyWindow();
             instance.Destroy();
 

@@ -205,8 +205,8 @@ namespace Vulkan.SharpLang.Examples
         Format format;
 
         public Format Format { get { return format; } }
-
-        public void InitSwapChainExtension()
+		
+		public void InitSwapChainExtension()
         {
             Win32SurfaceCreateInfoKhr createInfo = new Win32SurfaceCreateInfoKhr
             {
@@ -263,7 +263,13 @@ namespace Vulkan.SharpLang.Examples
             }
         }
 
-        public class SwapChainBuffer
+		public void DestroySwapChainExtension()
+		{
+			instance.DestroySurfaceKHR(surface);
+			surface = null;
+		}
+
+		public class SwapChainBuffer
         {
             public Image Image;
             public ImageView view;
@@ -417,8 +423,10 @@ namespace Vulkan.SharpLang.Examples
 
         Format depthFormat;
         Image depthImage;
+		public Image DepthImage {  get { return depthImage; } }
         ImageView depthView;
-        DeviceMemory depthMem;
+		public ImageView DepthView { get { return depthView; } }
+		DeviceMemory depthMem;
 
         public Format DepthFormat {  get { return depthFormat; } }
 
@@ -538,6 +546,78 @@ namespace Vulkan.SharpLang.Examples
             device.FreeMemory(depthMem);
         }
 
+		RenderPass renderPass;
+		public RenderPass RenderPass { get { return renderPass; } }
+
+		public RenderPass InitRenderPass(bool includeDepth, bool clear = true, ImageLayout finalLayout = ImageLayout.PresentSrcKhr)
+		{
+			AttachmentDescription[] attachments = new AttachmentDescription[includeDepth ? 2 : 1];
+			attachments[0] = new AttachmentDescription
+			{
+				Format = format,
+				Samples = SampleCountFlags.Count1,
+				LoadOp = clear ? AttachmentLoadOp.Clear : AttachmentLoadOp.DontCare,
+				StoreOp = AttachmentStoreOp.Store,
+				StencilLoadOp = AttachmentLoadOp.DontCare,
+				StencilStoreOp = AttachmentStoreOp.DontCare,
+				InitialLayout = ImageLayout.Undefined,
+				FinalLayout = finalLayout,
+				Flags = 0,
+
+			};
+			if(includeDepth)
+			{
+				attachments[1] = new AttachmentDescription
+				{
+					Format = depthFormat,
+					Samples = SampleCountFlags.Count1,
+					LoadOp = clear ? AttachmentLoadOp.Clear : AttachmentLoadOp.DontCare,
+					StoreOp = AttachmentStoreOp.Store,
+					StencilLoadOp = AttachmentLoadOp.Load,
+					StencilStoreOp = AttachmentStoreOp.Store,
+					InitialLayout = ImageLayout.Undefined,
+					FinalLayout = ImageLayout.DepthStencilAttachmentOptimal,
+					Flags = 0,
+				};
+			}
+
+			AttachmentReference colorReference = new AttachmentReference
+			{
+				Attachment = 0,
+				Layout = ImageLayout.ColorAttachmentOptimal,
+			};			
+
+			SubpassDescription subPass = new SubpassDescription
+			{
+				ColorAttachments = new AttachmentReference[] { colorReference },
+				PipelineBindPoint = PipelineBindPoint.Graphics,
+			};
+
+			if(includeDepth)
+			{
+				AttachmentReference depthReference = new AttachmentReference
+				{
+					Attachment = 1,
+					Layout = ImageLayout.DepthStencilAttachmentOptimal,
+				};
+				subPass.DepthStencilAttachment = depthReference;
+			}
+
+			renderPass = device.CreateRenderPass(new RenderPassCreateInfo
+			{
+				Attachments = attachments,
+				Subpasses = new SubpassDescription[] { subPass },
+			});
+
+			return renderPass;
+		}
+
+		public void DestroyRenderPass()
+		{
+			device.DestroyRenderPass(renderPass);
+			renderPass = null;
+		}
+
         CommandPool cmdPool;
 
         public CommandPool InitCommandPool()
@@ -596,19 +676,21 @@ namespace Vulkan.SharpLang.Examples
 
         public void ExecuteQueueCommandBuffer()
         {
+			// TODO : fix this
+
             FenceCreateInfo fenceInfo = new FenceCreateInfo
             {
             };
             Fence drawFence = device.CreateFence(fenceInfo);
 
-            PipelineStageFlags pipeStageFlags = PipelineStageFlags.BottomOfPipe;
+            PipelineStageFlags pipeStageFlags = PipelineStageFlags.ColorAttachmentOutput;
 			SubmitInfo submitInfo = new SubmitInfo
 			{
-				WaitSemaphores = new Semaphore[0],
+				//WaitSemaphores = new Semaphore[] { null }, // TODO sempafore from InitSwapChain
                 WaitDstStageMask = new PipelineStageFlags[] { pipeStageFlags },
-                CommandBuffers = new CommandBuffer[] { cmd },
-                SignalSemaphores = new Semaphore[0],                
+                CommandBuffers = new CommandBuffer[] { cmd },            
             };
+			submitInfo.WaitSemaphoreCount = 0;
 
             queue.Submit(new SubmitInfo[] { submitInfo }, drawFence);
 
@@ -722,5 +804,15 @@ namespace Vulkan.SharpLang.Examples
 
             cmd.CmdPipelineBarrier(srcStages, destStages, (DependencyFlags)0, null, null, new ImageMemoryBarrier[] { imageMemoryBarrier });
         }
+
+		public uint[] LoadSpvFile(string path)
+		{
+			byte[] data = System.IO.File.ReadAllBytes(path);
+			uint[] spv = new uint[data.Length / 4];
+
+			System.Buffer.BlockCopy(data, 0, spv, 0, data.Length);
+
+			return spv;
+		}
     }
 }
