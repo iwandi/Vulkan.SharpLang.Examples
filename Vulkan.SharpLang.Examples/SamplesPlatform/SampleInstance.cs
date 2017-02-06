@@ -3,6 +3,7 @@ using Vulkan;
 using Vulkan.Windows;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace Vulkan.SharpLang.Examples
 {
@@ -181,16 +182,23 @@ namespace Vulkan.SharpLang.Examples
         {
             connection = System.Runtime.InteropServices.Marshal.GetHINSTANCE(this.GetType().Module);
 
-            window = new Form
-            {
-                Name = appShortName,
-                Text = appShortName,
-                Width = (int)width,
-                Height = (int)height,                
-            };
+			Size size = new Size((int)width, (int)height);
+
+			window = new Form
+			{
+				Name = appShortName,
+				Text = appShortName,
+				/*Width = size.Width,
+				Height = size.Height,
+				AutoSize = false,
+				MinimumSize = size,
+				MaximumSize = size,*/
+				ClientSize = size,
+			};			
 
             window.Show();
-            return window.Handle;
+
+			return window.Handle;
         }
 
         public void DestroyWindow()
@@ -275,7 +283,8 @@ namespace Vulkan.SharpLang.Examples
             public ImageView view;
         }
 
-        SwapchainKhr swapChain;
+		Extent2D swapChainExtend;
+		SwapchainKhr swapChain;
         SwapChainBuffer[] buffers;
         uint currentBuffer;
 
@@ -288,7 +297,7 @@ namespace Vulkan.SharpLang.Examples
             SurfaceCapabilitiesKhr surfCapabilities = gpu.GetSurfaceCapabilitiesKHR(surface);
             PresentModeKhr[] presentModes = gpu.GetSurfacePresentModesKHR(surface);
 
-            Extent2D swapChainExtend = new Extent2D();
+            swapChainExtend = new Extent2D();
             // width and height are either both -1, or both not -1.
             if (surfCapabilities.CurrentExtent.Width == uint.MaxValue)
             {
@@ -410,6 +419,7 @@ namespace Vulkan.SharpLang.Examples
                 device.DestroyImageView(buffer.view);
             }
             device.DestroySwapchainKHR(swapChain);
+			instance.DestroySurfaceKHR(surface);
         }
 
         Queue queue;
@@ -462,8 +472,8 @@ namespace Vulkan.SharpLang.Examples
                 Format = depthFormat,
                 Extent = new Extent3D
                 {
-                    Width = width,
-                    Height = height,
+                    Width = swapChainExtend.Width,
+                    Height = swapChainExtend.Height,
                     Depth = 1,
                 },
                 MipLevels = 1,
