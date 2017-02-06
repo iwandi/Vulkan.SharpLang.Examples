@@ -4,7 +4,7 @@ using Vulkan;
 
 namespace Vulkan.SharpLang.Examples
 {
-	class SampleInitFrameBuffers
+	class SampleInitPipeline
 	{
 		static void Main(string[] args)
 		{
@@ -12,10 +12,10 @@ namespace Vulkan.SharpLang.Examples
 			sample.InitGlobalLayerProperties();
 			sample.InitInstanceeExtensionNames();
 			sample.InitDeviceExtensionNames();
-			Instance instance = sample.InitInstance("Init Framebuffer Sample");
+			Instance instance = sample.InitInstance("Graphics Pipeline Sample");
 			sample.InitEnumerateDevice();
+			sample.InitWindowSize(500, 500);
 			sample.InitConnection();
-			sample.InitWindowSize(50, 50);
 			sample.InitWindow();
 			sample.InitSwapChainExtension();
 			Device device = sample.InitDevice();
@@ -25,42 +25,25 @@ namespace Vulkan.SharpLang.Examples
 			sample.InitDeviceQueue();
 			sample.InitSwapChain();
 			sample.InitDepthBuffer();
+			sample.InitUniformBuffer();
 			sample.InitRenderPass(true);
+			sample.InitFrameBuffers(true);
+			sample.InitVertexBuffer();
+			sample.InitDescriptorAndPipelineLayout();
+			sample.InitDescriptorPool();
+			sample.InitDescriptorSet();
+			sample.InitShaders();
 
 			/* VULKAN_KEY_START */
-			ImageView[] attachments = new ImageView[]
-			{
-				sample.Buffers[0].view,
-				sample.DepthView
-			};
 
-			FramebufferCreateInfo fbInfo = new FramebufferCreateInfo
-			{
-				RenderPass = sample.RenderPass,
-				Attachments = attachments,
-				Width = sample.Width,
-				Height = sample.Height,
-				Layers = 1,
-			};
-
-			Framebuffer[] frameBuffers = new Framebuffer[sample.Buffers.Length];
-
-			for(int i = 0; i < sample.Buffers.Length; i++)
-			{
-				attachments[0] = sample.Buffers[i].view;
-				frameBuffers[i] = device.CreateFramebuffer(fbInfo);
-			}
-
-			sample.ExecuteEndCommandBuffer();
-			sample.ExecuteQueueCommandBuffer();
 			/* VULKAN_KEY_END */
-
-			foreach(Framebuffer frameBuffer in frameBuffers)
-			{
-				device.DestroyFramebuffer(frameBuffer);
-			}
-
+			sample.DestroyDescriptorPool();
+			sample.DestroyVertexBuffer();
+			sample.DestroyFrameBuffers();
+			sample.DestroyShaders();
 			sample.DestroyRenderPass();
+			sample.DestroyDescriptorAndPipelineLayout();
+			sample.DestroyUniformBuffer();
 			sample.DestroyDepthBuffer();
 			sample.DestroySwapChain();
 			sample.DestroyCommandBuffer();

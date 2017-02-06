@@ -29,6 +29,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InitShaders", "InitShaders\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InitFrameBuffers", "InitFrameBuffers\InitFrameBuffers.csproj", "{D12CC993-6BB9-49F7-881B-0FA4D7468A70}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InitVertexBuffer", "InitVertexBuffer\InitVertexBuffer.csproj", "{A6D48937-459D-478C-B049-88308A3C7BDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InitPipeline", "InitPipeline\InitPipeline.csproj", "{236D35DC-9B1F-446F-89D6-42899747A7FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawCube", "DrawCube\DrawCube.csproj", "{18334653-C4E8-4755-82AF-98CC4E91CFEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - Tanagra|Any CPU = Debug - Tanagra|Any CPU
@@ -195,6 +201,42 @@ Global
 		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
 		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D12CC993-6BB9-49F7-881B-0FA4D7468A70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6D48937-459D-478C-B049-88308A3C7BDE}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6D48937-459D-478C-B049-88308A3C7BDE}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{A6D48937-459D-478C-B049-88308A3C7BDE}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6D48937-459D-478C-B049-88308A3C7BDE}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{A6D48937-459D-478C-B049-88308A3C7BDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6D48937-459D-478C-B049-88308A3C7BDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6D48937-459D-478C-B049-88308A3C7BDE}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{A6D48937-459D-478C-B049-88308A3C7BDE}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{A6D48937-459D-478C-B049-88308A3C7BDE}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{A6D48937-459D-478C-B049-88308A3C7BDE}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{A6D48937-459D-478C-B049-88308A3C7BDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6D48937-459D-478C-B049-88308A3C7BDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{236D35DC-9B1F-446F-89D6-42899747A7FE}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{236D35DC-9B1F-446F-89D6-42899747A7FE}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{236D35DC-9B1F-446F-89D6-42899747A7FE}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{236D35DC-9B1F-446F-89D6-42899747A7FE}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{236D35DC-9B1F-446F-89D6-42899747A7FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{236D35DC-9B1F-446F-89D6-42899747A7FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{236D35DC-9B1F-446F-89D6-42899747A7FE}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{236D35DC-9B1F-446F-89D6-42899747A7FE}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{236D35DC-9B1F-446F-89D6-42899747A7FE}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{236D35DC-9B1F-446F-89D6-42899747A7FE}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{236D35DC-9B1F-446F-89D6-42899747A7FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{236D35DC-9B1F-446F-89D6-42899747A7FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

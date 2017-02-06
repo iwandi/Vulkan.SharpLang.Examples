@@ -628,6 +628,43 @@ namespace Vulkan.SharpLang.Examples
 			renderPass = null;
 		}
 
+		Framebuffer[] frameBuffers;
+		public Framebuffer[] FrameBuffers {  get { return frameBuffers; } }
+
+		public void InitFrameBuffers(bool includeDepth)
+		{
+			ImageView[] attachments = new ImageView[]
+			{ 
+				buffers[0].view,
+				depthView,
+			};
+
+			FramebufferCreateInfo fbInfo = new FramebufferCreateInfo
+			{
+				RenderPass = renderPass,
+				Attachments = attachments,
+				Width = width,
+				Height = height,
+				Layers = 1,
+			};
+
+			frameBuffers = new Framebuffer[buffers.Length];
+
+			for (int i = 0; i < buffers.Length; i++)
+			{
+				attachments[0] = buffers[i].view;
+				frameBuffers[i] = device.CreateFramebuffer(fbInfo);
+			}
+		}
+
+		public void DestroyFrameBuffers()
+		{
+			foreach (Framebuffer frameBuffer in frameBuffers)
+			{
+				device.DestroyFramebuffer(frameBuffer);
+			}
+		}
+
         CommandPool cmdPool;
 
         public CommandPool InitCommandPool()
@@ -727,6 +764,88 @@ namespace Vulkan.SharpLang.Examples
 
             device.DestroyFence(drawFence);
         }
+
+		public void InitUniformBuffer()
+		{
+			/*
+			// TODO generate a MVP matrix
+			int size = sizeof(MVP);
+			Buffer uniformDataBuf = device.CreateBuffer(new BufferCreateInfo
+			{
+				Usage = BufferUsageFlags.UniformBuffer,
+				Size = size,
+				SharingMode = SharingMode.Exclusive,
+			});
+
+			MemoryRequirements memReqs = device.GetBufferMemoryRequirements(uniformDataBuf);
+			uint memoryTypeIndex;
+			MemoryTypeFromProperties(memReqs.MemoryTypeBits, MemoryPropertyFlags.HostVisible | MemoryPropertyFlags.HostCoherent, out memoryTypeIndex);
+
+			DeviceMemory mem = device.AllocateMemory(new MemoryAllocateInfo
+			{
+				AllocationSize = memReqs.Size,
+				MemoryTypeIndex = memoryTypeIndex,
+			});
+
+			IntPtr pDest = device.MapMemory(mem, 0, size);
+			// TODO : copy data
+			device.UnmapMemory(mem);
+			device.BindBufferMemory(uniformDataBuf, mem, 0);
+			*/
+		}
+
+		public void DestroyUniformBuffer()
+		{
+			/*
+			device.DestroyBuffer();
+			device.FreeMemory();
+			*/
+		}
+
+		public void InitVertexBuffer()
+		{
+
+		}
+
+		public void DestroyVertexBuffer()
+		{
+
+		}
+
+		public void InitShaders()
+		{
+
+		}
+
+		public void DestroyShaders()
+		{
+
+		}
+
+		public void InitDescriptorAndPipelineLayout()
+		{
+
+		}
+
+		public void DestroyDescriptorAndPipelineLayout()
+		{
+
+		}
+
+		public void InitDescriptorPool()
+		{
+
+		}
+
+		public void DestroyDescriptorPool()
+		{
+
+		}
+
+		public void InitDescriptorSet()
+		{
+
+		}
 
         public bool MemoryTypeFromProperties(uint typeBits, MemoryPropertyFlags requirementsMask, out uint typeIndex)
         {
