@@ -66,8 +66,6 @@ namespace Vulkan.SharpLang.Examples
 			device.Destroy();
 			sample.DestroyWindow();
 			instance.Destroy();
-
-			Console.ReadLine();
 		}
 	}
 }
