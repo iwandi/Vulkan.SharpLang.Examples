@@ -4,6 +4,8 @@ using Vulkan.Windows;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Numerics;
 
 namespace Vulkan.SharpLang.Examples
 {
@@ -11,7 +13,12 @@ namespace Vulkan.SharpLang.Examples
     {
         const ulong FENCE_TIMEOUT =  100000000;
 
-        class LayerPropertiesInfo 
+		[DllImport("msvcrt.dll", SetLastError = false)]
+		static extern IntPtr memcpy(IntPtr dest, IntPtr src, int count);
+		[DllImport("kernel32.dll")]
+		static extern void CopyMemory(IntPtr destination, IntPtr source, uint length);
+
+		class LayerPropertiesInfo 
         {
             public Vulkan.LayerProperties Properties;
             public ExtensionProperties[] Extensions;
@@ -765,12 +772,34 @@ namespace Vulkan.SharpLang.Examples
             device.DestroyFence(drawFence);
         }
 
+		Buffer uniformDataBuf;
+		DeviceMemory uniformDataMem;
+		DescriptorBufferInfo[] uniformDataInfo;
+
 		public void InitUniformBuffer()
 		{
-			/*
-			// TODO generate a MVP matrix
-			int size = sizeof(MVP);
-			Buffer uniformDataBuf = device.CreateBuffer(new BufferCreateInfo
+			float fov = MathHelper.ToRadians(45f);
+			float aspectRatio = 1f;
+			if(width > height)
+			{
+				aspectRatio = height / width;
+			}
+			else
+			{
+				aspectRatio = width / height;
+			}
+			Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(fov, aspectRatio, 0.1f, 100f);
+			Matrix4x4 view = Matrix4x4.CreateLookAt(new Vector3(-5f, 3f, -10f),
+				new Vector3(0f, 0f, 0f),
+				new Vector3(0f, -1f, 0f));
+			Matrix4x4 model = Matrix4x4.Identity;
+			Matrix4x4 clip = new Matrix4x4(1f, 0f, 0f, 0f,
+				0f, -1f, 0f, 0f,
+				0f, 0f, 0.5f, 0f,
+				0f, 0f, 0.5f, 1.0f);
+			Matrix4x4 mvp = clip * projection * view * model;
+			uint size = sizeof(float) * 4 * 4;
+			uniformDataBuf = device.CreateBuffer(new BufferCreateInfo
 			{
 				Usage = BufferUsageFlags.UniformBuffer,
 				Size = size,
@@ -781,70 +810,277 @@ namespace Vulkan.SharpLang.Examples
 			uint memoryTypeIndex;
 			MemoryTypeFromProperties(memReqs.MemoryTypeBits, MemoryPropertyFlags.HostVisible | MemoryPropertyFlags.HostCoherent, out memoryTypeIndex);
 
-			DeviceMemory mem = device.AllocateMemory(new MemoryAllocateInfo
+			uniformDataMem = device.AllocateMemory(new MemoryAllocateInfo
 			{
 				AllocationSize = memReqs.Size,
 				MemoryTypeIndex = memoryTypeIndex,
 			});
 
-			IntPtr pDest = device.MapMemory(mem, 0, size);
-			// TODO : copy data
-			device.UnmapMemory(mem);
-			device.BindBufferMemory(uniformDataBuf, mem, 0);
-			*/
+			CopyToBuffer(mvp, 0, size, uniformDataMem);
+						
+			device.BindBufferMemory(uniformDataBuf, uniformDataMem, 0);
+
+			uniformDataInfo = new DescriptorBufferInfo[]
+			{
+				new DescriptorBufferInfo
+				{
+					Buffer = uniformDataBuf,
+					Offset = 0,
+					Range = size,
+				}
+			};
 		}
 
 		public void DestroyUniformBuffer()
 		{
-			/*
-			device.DestroyBuffer();
-			device.FreeMemory();
-			*/
+			device.DestroyBuffer(uniformDataBuf);
+			device.FreeMemory(uniformDataMem);
 		}
 
-		public void InitVertexBuffer()
-		{
+		Buffer vertexBuffer;
+		DeviceMemory vertexBufferMem;
 
+		VertexInputBindingDescription[] viBinding;
+		VertexInputAttributeDescription[] viAttribs;
+
+		public VertexInputBindingDescription[] ViBinding {  get { return viBinding; } }
+		public VertexInputAttributeDescription[] ViAttribs { get { return viAttribs; } }
+
+		public void InitVertexBuffer(object data, uint size, uint stride, bool useTexture)
+		{
+			vertexBuffer = device.CreateBuffer(new BufferCreateInfo
+			{
+				Usage = BufferUsageFlags.VertexBuffer,
+				Size = size,
+				SharingMode = SharingMode.Exclusive,
+			});
+
+			MemoryRequirements memReq = device.GetBufferMemoryRequirements(vertexBuffer);
+
+			uint memoryTypeIndex;
+			MemoryTypeFromProperties(memReq.MemoryTypeBits, MemoryPropertyFlags.HostVisible | MemoryPropertyFlags.HostCoherent, out memoryTypeIndex);
+
+			vertexBufferMem = device.AllocateMemory(new MemoryAllocateInfo
+			{
+				AllocationSize = memReq.Size,
+				MemoryTypeIndex = memoryTypeIndex,
+			});
+
+			CopyToBuffer(data, 0, size, vertexBufferMem);
+
+			device.BindBufferMemory(vertexBuffer, vertexBufferMem, 0);
+
+			viBinding = new VertexInputBindingDescription[]
+			{
+				new VertexInputBindingDescription
+				{
+					InputRate = VertexInputRate.Vertex,
+					Stride = stride,
+				}
+			};
+
+			viAttribs = new VertexInputAttributeDescription[] 
+			{
+				new VertexInputAttributeDescription
+				{
+					Format = Format.R32G32B32A32Sfloat,
+					Location = 0,
+					Binding = 0,
+					Offset = 0,
+				},
+				new VertexInputAttributeDescription
+				{
+					Format = useTexture ? Format.R32G32Sfloat : Format.R32G32B32A32Sfloat,
+					Location = 1,
+					Binding = 0,
+					Offset = 16,
+				},
+			};
 		}
 
 		public void DestroyVertexBuffer()
 		{
-
+			device.DestroyBuffer(vertexBuffer);
+			device.FreeMemory(vertexBufferMem);
 		}
 
-		public void InitShaders()
-		{
+		ShaderModule vertModule;
+		ShaderModule fragModule;
+		PipelineShaderStageCreateInfo vertInfo;
+		PipelineShaderStageCreateInfo fragInfo;
+		PipelineShaderStageCreateInfo[] shaderStages;
 
+		public PipelineShaderStageCreateInfo[] ShaderStages {  get { return shaderStages; } }
+
+		public void InitShaders(string vert, string frag)
+		{
+			if (!string.IsNullOrEmpty(vert))
+			{				
+				uint[] vertSpv = LoadSpvFile(vert);
+				vertModule = device.CreateShaderModule(new ShaderModuleCreateInfo
+				{
+					Code = vertSpv,
+				});
+				vertInfo = new PipelineShaderStageCreateInfo
+				{
+					Stage = ShaderStageFlags.Vertex,
+					Name = "main",
+					Module = vertModule,
+				};
+			}
+
+			if (!string.IsNullOrEmpty(frag))
+			{				
+				uint[] fragSpv = LoadSpvFile(frag);
+				fragModule = device.CreateShaderModule(new ShaderModuleCreateInfo
+				{
+					Code = fragSpv,
+				});
+				fragInfo = new PipelineShaderStageCreateInfo
+				{
+					Stage = ShaderStageFlags.Fragment,
+					Name = "main",
+					Module = fragModule,
+				};
+			}
+
+			shaderStages = new PipelineShaderStageCreateInfo[]
+			{
+				vertInfo,
+				fragInfo,
+			};
 		}
 
 		public void DestroyShaders()
 		{
-
+			device.DestroyShaderModule(vertModule);
+			device.DestroyShaderModule(fragModule);
 		}
 
-		public void InitDescriptorAndPipelineLayout()
-		{
+		DescriptorSetLayout[] descLayout;
+		PipelineLayout pipelineLayout;
 
+		public PipelineLayout PipelineLayout { get { return pipelineLayout; } }
+
+		public void InitDescriptorAndPipelineLayout(bool useTexture = false)
+		{
+			DescriptorSetLayoutBinding[] layoutBindings = new DescriptorSetLayoutBinding[useTexture ? 2 : 1];
+
+			layoutBindings[0] = new DescriptorSetLayoutBinding
+			{
+				DescriptorType = DescriptorType.UniformBuffer,
+				DescriptorCount = 1,
+				StageFlags = ShaderStageFlags.Vertex,
+			};
+
+			if(useTexture)
+			{
+				layoutBindings[1] = new DescriptorSetLayoutBinding
+				{
+					DescriptorType = DescriptorType.CombinedImageSampler,
+					DescriptorCount = 1,
+					StageFlags = ShaderStageFlags.Fragment,
+				};
+			}
+
+			DescriptorSetLayout desc = device.CreateDescriptorSetLayout(new DescriptorSetLayoutCreateInfo
+			{
+				Bindings = layoutBindings,
+			});
+
+			descLayout = new DescriptorSetLayout[] { desc };
+
+			pipelineLayout = device.CreatePipelineLayout(new PipelineLayoutCreateInfo
+			{
+				SetLayouts = descLayout,
+			});
 		}
 
 		public void DestroyDescriptorAndPipelineLayout()
 		{
-
+			foreach(DescriptorSetLayout desc in descLayout)
+			{
+				device.DestroyDescriptorSetLayout(desc);
+			}
+			device.DestroyPipelineLayout(pipelineLayout);
 		}
 
-		public void InitDescriptorPool()
-		{
+		DescriptorPool descriptorPool;
 
+		public void InitDescriptorPool(bool useTexture = false)
+		{
+			DescriptorPoolSize[] typeCount = new DescriptorPoolSize[useTexture ? 2 : 1];
+			typeCount[0] = new DescriptorPoolSize
+			{
+				Type = DescriptorType.UniformBuffer,
+				DescriptorCount = 1,
+			};
+
+			if(useTexture)
+			{
+				typeCount[1] = new DescriptorPoolSize
+				{
+					Type = DescriptorType.CombinedImageSampler,
+					DescriptorCount = 1,
+				};
+			}
+			
+			descriptorPool = device.CreateDescriptorPool(new DescriptorPoolCreateInfo
+			{
+				MaxSets = 1,
+				PoolSizes = typeCount,
+			});
 		}
 
 		public void DestroyDescriptorPool()
 		{
-
+			device.DestroyDescriptorPool(descriptorPool);
 		}
 
-		public void InitDescriptorSet()
+		public void InitDescriptorSet(bool useTexture = false)
 		{
+			DescriptorSetAllocateInfo allocInfo = new DescriptorSetAllocateInfo
+			{
+				DescriptorPool = descriptorPool,
+				DescriptorSetCount = (uint)descLayout.Length, // TODO : check if we need this
+				SetLayouts = descLayout,
+			};
 
+			DescriptorSet[] descSet = device.AllocateDescriptorSets(allocInfo);
+
+			WriteDescriptorSet[] writes = new WriteDescriptorSet[useTexture ? 2 : 1];
+
+			writes[0] = new WriteDescriptorSet
+			{
+				DstSet = descSet[0],
+				DescriptorCount = 1,
+				DescriptorType = DescriptorType.UniformBuffer,
+				BufferInfo = uniformDataInfo,
+				DstArrayElement = 0,
+				DstBinding = 0,
+			};
+
+			if(useTexture)
+			{
+				writes[1] = new WriteDescriptorSet
+				{
+					DstSet = descSet[0],
+					DstBinding = 1,
+					DescriptorCount = 1,
+					DescriptorType = DescriptorType.CombinedImageSampler,
+					BufferInfo = textureDataInfo,
+					DstArrayElement = 0,
+				};
+			}
+
+			device.UpdateDescriptorSet(writes[0], null); // TODO : check low level implementation and c sample
+		}
+
+		DescriptorBufferInfo[] textureDataInfo;
+
+		public void InitTexture()
+		{
+			// TODO : 
 		}
 
         public bool MemoryTypeFromProperties(uint typeBits, MemoryPropertyFlags requirementsMask, out uint typeIndex)
@@ -942,6 +1178,25 @@ namespace Vulkan.SharpLang.Examples
 			System.Buffer.BlockCopy(data, 0, spv, 0, data.Length);
 
 			return spv;
+		}
+
+		public void CopyToBuffer(object data,uint offset, uint size, DeviceMemory mem)//,MemoryRequirements memReq)
+		{
+			IntPtr pDest = device.MapMemory(mem, offset, size);// memReq.Size);
+			GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			try
+			{
+				IntPtr pData = handle.AddrOfPinnedObject();
+				CopyMemory(pDest, pData, (uint)size);
+			}
+			finally
+			{
+				if (handle.IsAllocated)
+				{
+					handle.Free();
+				}
+			}
+			device.UnmapMemory(mem);
 		}
     }
 }
