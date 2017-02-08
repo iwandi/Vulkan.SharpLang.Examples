@@ -843,6 +843,8 @@ namespace Vulkan.SharpLang.Examples
 		VertexInputBindingDescription[] viBinding;
 		VertexInputAttributeDescription[] viAttribs;
 
+		public Buffer VertexBuffer { get { return vertexBuffer; } }
+
 		public VertexInputBindingDescription[] ViBinding {  get { return viBinding; } }
 		public VertexInputAttributeDescription[] ViAttribs { get { return viAttribs; } }
 
@@ -1037,6 +1039,9 @@ namespace Vulkan.SharpLang.Examples
 			device.DestroyDescriptorPool(descriptorPool);
 		}
 
+		DescriptorSet[] descSet;
+		public DescriptorSet[] DescSet {  get { return descSet; } }
+
 		public void InitDescriptorSet(bool useTexture = false)
 		{
 			DescriptorSetAllocateInfo allocInfo = new DescriptorSetAllocateInfo
@@ -1046,7 +1051,7 @@ namespace Vulkan.SharpLang.Examples
 				SetLayouts = descLayout,
 			};
 
-			DescriptorSet[] descSet = device.AllocateDescriptorSets(allocInfo);
+			descSet = device.AllocateDescriptorSets(allocInfo); // TODO : why do we not need to deallocate this ?
 
 			WriteDescriptorSet[] writes = new WriteDescriptorSet[useTexture ? 2 : 1];
 
@@ -1074,6 +1079,178 @@ namespace Vulkan.SharpLang.Examples
 			}
 
 			device.UpdateDescriptorSet(writes[0], null); // TODO : check low level implementation and c sample
+		}
+
+		PipelineCache pipelineCache;
+
+		public void InitPipelineCache()
+		{
+			pipelineCache = device.CreatePipelineCache(new PipelineCacheCreateInfo
+			{
+
+			});
+		}
+
+		public void DestroyPipelineCache()
+		{
+			device.DestroyPipelineCache(pipelineCache);
+		}
+
+		Pipeline pipeline;
+		public Pipeline Pipeline {  get { return pipeline; } }
+
+		public void InitPipeline(bool includeDepth)
+		{
+			DynamicState[] dynamicStateEnables = new DynamicState[]
+			{
+				DynamicState.Viewport,
+				DynamicState.Scissor,
+			};
+
+			PipelineDynamicStateCreateInfo dynamicState = new PipelineDynamicStateCreateInfo
+			{
+				DynamicStates = dynamicStateEnables,
+			};
+
+			PipelineVertexInputStateCreateInfo vi = new PipelineVertexInputStateCreateInfo
+			{
+				VertexBindingDescriptions = ViBinding,
+				VertexAttributeDescriptions = ViAttribs,
+			};
+
+			PipelineInputAssemblyStateCreateInfo ia = new PipelineInputAssemblyStateCreateInfo
+			{
+				PrimitiveRestartEnable = false,
+				Topology = PrimitiveTopology.TriangleList,
+			};
+
+			PipelineRasterizationStateCreateInfo rs = new PipelineRasterizationStateCreateInfo
+			{
+				PolygonMode = PolygonMode.Fill,
+				CullMode = CullModeFlags.Back,
+				FrontFace = FrontFace.Clockwise,
+				DepthClampEnable = includeDepth,
+				LineWidth = 1f,
+			};
+
+			PipelineColorBlendAttachmentState[] attState = new PipelineColorBlendAttachmentState[]
+			{
+				new PipelineColorBlendAttachmentState
+				{
+					AlphaBlendOp = BlendOp.Add,
+					ColorBlendOp = BlendOp.Add,
+					SrcColorBlendFactor = BlendFactor.Zero,
+					DstColorBlendFactor = BlendFactor.Zero,
+					SrcAlphaBlendFactor = BlendFactor.Zero,
+					DstAlphaBlendFactor = BlendFactor.Zero,
+				},
+			};
+
+			PipelineColorBlendStateCreateInfo cb = new PipelineColorBlendStateCreateInfo
+			{
+				Attachments = attState,
+				LogicOpEnable = false,
+				LogicOp = LogicOp.NoOp,
+				BlendConstants = new float[] { 1f, 1f, 1f, 1f },
+			};
+
+			/*Viewport viewport = new Viewport
+			{
+				MinDepth = 0f,
+				MaxDepth = 1f,
+				X = 0,
+				Y = 0,
+				Width = width,
+				Height = height,
+			};
+			Rect2D scissor = new Rect2D
+			{
+				Extent = new Extent2D { Width = width, Height = height },
+				Offset = new Offset2D {  X = 0, Y = 0 }
+			};*/
+
+			PipelineViewportStateCreateInfo vp = new PipelineViewportStateCreateInfo
+			{
+				//Viewports = new Viewport[] { viewport  },
+				//Scissors = new Rect2D[] { scissor }
+				ViewportCount = 1,
+				ScissorCount = 1,
+			};
+
+			StencilOpState stencilOpState = new StencilOpState
+			{
+				FailOp = StencilOp.Keep,
+				PassOp = StencilOp.Keep,
+				CompareOp = CompareOp.Always,
+				DepthFailOp = StencilOp.Keep,
+			};
+			PipelineDepthStencilStateCreateInfo ds = new PipelineDepthStencilStateCreateInfo
+			{
+				DepthTestEnable = includeDepth,
+				DepthWriteEnable = includeDepth,
+				DepthCompareOp = CompareOp.LessOrEqual,
+				Back = stencilOpState,
+				Front = stencilOpState,
+			};
+
+			PipelineMultisampleStateCreateInfo ms = new PipelineMultisampleStateCreateInfo
+			{
+				RasterizationSamples = SampleCountFlags.Count1,
+				MinSampleShading = 0,
+			};
+
+			pipeline = device.CreateGraphicsPipelines(null,
+				new GraphicsPipelineCreateInfo[]
+				{
+					new GraphicsPipelineCreateInfo
+					{
+						Layout =  pipelineLayout,
+						VertexInputState = vi,
+						InputAssemblyState = ia,
+						RasterizationState = rs,
+						ColorBlendState = cb,
+						MultisampleState = ms,
+						DynamicState = dynamicState,
+						ViewportState = vp,
+						DepthStencilState = ds,
+						Stages = shaderStages,
+						RenderPass = renderPass,
+						Subpass = 0,
+					}
+				})[0];
+		}
+
+		public void DestroyPipeline()
+		{
+			device.DestroyPipeline(pipeline);
+		}
+
+		public void InitViewPorts()
+		{
+			cmd.CmdSetViewport(0, new Viewport[] 
+			{
+				new Viewport
+				{
+					Height = height,
+					Width = width,
+					MinDepth = 0f,
+					MaxDepth = 1f,
+					X = 0,
+					Y = 0,
+				}
+			});
+		}
+
+		public void InitScissors()
+		{
+			cmd.CmdSetScissor(0, new Rect2D[]
+			{
+				new Rect2D
+				{
+					Extent = new Extent2D { Width = width, Height = height, },
+					Offset = new Offset2D { X = 0, Y = 0 }					
+				}
+			});
 		}
 
 		DescriptorBufferInfo[] textureDataInfo;

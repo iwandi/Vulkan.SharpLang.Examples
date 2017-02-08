@@ -73,6 +73,8 @@ namespace Vulkan.SharpLang.Examples
 			new Vertex(-1f,-1f,-1f, 0f, 1f, 1f),
 		};
 
+		const uint FENCE_TIMEOUT = 100000000;
+
 		static void Main(string[] args)
 		{
 			SampleInstance sample = new SampleInstance();
@@ -88,9 +90,9 @@ namespace Vulkan.SharpLang.Examples
 			Device device = sample.InitDevice();
 
 			sample.InitCommandPool();
-			sample.InitCommandBuffer();
+			CommandBuffer cmd = sample.InitCommandBuffer();
 			sample.ExecuteBeginCommandBuffer();
-			sample.InitDeviceQueue();
+			Queue queue = sample.InitDeviceQueue();
 			sample.InitSwapChain();
 			sample.InitDepthBuffer();
 			sample.InitUniformBuffer();
@@ -106,9 +108,100 @@ namespace Vulkan.SharpLang.Examples
 
 			/* VULKAN_KEY_START */
 
+			ClearValue[] clearValues = new ClearValue[]
+			{
+				new ClearValue
+				{
+					Color = new ClearColorValue (new float[] { 0.2f, 0.2f, 0.2f, 0.2f }),
+				},
+				new ClearValue
+				{
+					DepthStencil = new ClearDepthStencilValue
+					{
+						Depth = 1f,
+						Stencil = 0,
+					},
+				},
+			};
+
+			Semaphore imageAcquiredSemaphore = device.CreateSemaphore(new SemaphoreCreateInfo { });
+
+			sample.CurrentBuffer = device.AcquireNextImageKHR(sample.SwapChain, uint.MaxValue, imageAcquiredSemaphore);
+			
+			RenderPassBeginInfo rpBegin = new RenderPassBeginInfo
+			{
+				RenderPass = sample.RenderPass,
+				Framebuffer = sample.FrameBuffers[sample.CurrentBuffer],
+				RenderArea = new Rect2D
+				{
+					Extent = new Extent2D {  Width = sample.Width, Height = sample.Height },
+					Offset = new Offset2D { X = 0, Y = 0 },
+				},
+				ClearValues = clearValues,
+			};
+
+			cmd.CmdBeginRenderPass(rpBegin, SubpassContents.Inline);
+			cmd.CmdBindPipeline(PipelineBindPoint.Graphics, sample.Pipeline);
+			cmd.CmdBindDescriptorSets(PipelineBindPoint.Graphics, sample.PipelineLayout, 0, sample.DescSet, null); // TODO : check firstSet
+			cmd.CmdBindVertexBuffers(0, new Buffer[] { sample.VertexBuffer }, new DeviceSize[] { 0 });
+
+			sample.InitViewPorts();
+			sample.InitScissors();
+
+			cmd.CmdDraw(12 * 3, 1, 0, 0);
+			cmd.CmdEndRenderPass();
+
+			cmd.End();
+			
+			Fence drawFence = device.CreateFence(new FenceCreateInfo { });
+			
+			SubmitInfo[] submitInfo = new SubmitInfo[]
+			{
+				new SubmitInfo
+				{
+					WaitSemaphores = new Semaphore[] { imageAcquiredSemaphore },
+					WaitDstStageMask = new PipelineStageFlags[] { PipelineStageFlags.ColorAttachmentOutput },
+					CommandBuffers = new CommandBuffer[] { cmd },
+				}
+			};
+
+			/* Queue the command buffer for execution */
+			queue.Submit(submitInfo);
+
+			/* Now present the image in the window */
+			PresentInfoKhr present = new PresentInfoKhr
+			{
+				Swapchains = new SwapchainKhr[] { sample.SwapChain },
+				ImageIndices = new uint[] { sample.CurrentBuffer },
+			};
+
+			//device.WaitForFences(new Fence[] { drawFence }, true, uint.MaxValue);
+			bool run = true;
+			do
+			{
+				try
+				{
+					device.WaitForFences(new Fence[] { drawFence }, true, FENCE_TIMEOUT);
+				}
+				catch(ResultException ex)
+				{
+					if(ex.Result != Result.Timeout)
+					{
+						Console.WriteLine(ex.Message);
+						Console.WriteLine(ex.StackTrace);
+						run = false;
+					}
+				}
+			}
+			while (run);
+
+			queue.PresentKHR(present);
+
+			System.Threading.Thread.Sleep(10000);
+
 			/* VULKAN_KEY_END */
-			// TODO Destroy Semaphore
-			// TODO Destroy Fence
+			device.DestroySemaphore(imageAcquiredSemaphore);
+			device.DestroyFence(drawFence);
 
 			sample.DestroyPipeline();
 			sample.DestroyPipelineCache();
