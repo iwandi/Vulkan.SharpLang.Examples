@@ -166,7 +166,7 @@ namespace Vulkan.SharpLang.Examples
 			};
 
 			/* Queue the command buffer for execution */
-			queue.Submit(submitInfo);
+			queue.Submit(submitInfo, drawFence);
 
 			/* Now present the image in the window */
 			PresentInfoKhr present = new PresentInfoKhr
@@ -182,6 +182,7 @@ namespace Vulkan.SharpLang.Examples
 				try
 				{
 					device.WaitForFences(new Fence[] { drawFence }, true, FENCE_TIMEOUT);
+					run = false;
 				}
 				catch(ResultException ex)
 				{
@@ -219,8 +220,6 @@ namespace Vulkan.SharpLang.Examples
 			device.Destroy();
 			sample.DestroyWindow();
 			instance.Destroy();
-
-			Console.ReadLine();
 		}
 	}
 }
