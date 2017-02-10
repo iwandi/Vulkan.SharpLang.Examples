@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InitPipeline", "InitPipelin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawCube", "DrawCube\DrawCube.csproj", "{18334653-C4E8-4755-82AF-98CC4E91CFEC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cube", "Cube\Cube.csproj", "{65BD1AB7-49C4-4798-BF55-48830C3D3279}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefactoredCube", "RefactoredCube\RefactoredCube.csproj", "{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - Tanagra|Any CPU = Debug - Tanagra|Any CPU
@@ -237,6 +241,30 @@ Global
 		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
 		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18334653-C4E8-4755-82AF-98CC4E91CFEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65BD1AB7-49C4-4798-BF55-48830C3D3279}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{65BD1AB7-49C4-4798-BF55-48830C3D3279}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{65BD1AB7-49C4-4798-BF55-48830C3D3279}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{65BD1AB7-49C4-4798-BF55-48830C3D3279}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{65BD1AB7-49C4-4798-BF55-48830C3D3279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65BD1AB7-49C4-4798-BF55-48830C3D3279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65BD1AB7-49C4-4798-BF55-48830C3D3279}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{65BD1AB7-49C4-4798-BF55-48830C3D3279}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{65BD1AB7-49C4-4798-BF55-48830C3D3279}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{65BD1AB7-49C4-4798-BF55-48830C3D3279}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{65BD1AB7-49C4-4798-BF55-48830C3D3279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65BD1AB7-49C4-4798-BF55-48830C3D3279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}.Debug - Tanagra|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}.Debug - Tanagra|Any CPU.Build.0 = Debug|Any CPU
+		{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}.Debug - VulkanSharp|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}.Debug - VulkanSharp|Any CPU.Build.0 = Debug|Any CPU
+		{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}.Release - Tanagra|Any CPU.ActiveCfg = Release|Any CPU
+		{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}.Release - Tanagra|Any CPU.Build.0 = Release|Any CPU
+		{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}.Release - VulkanSharp|Any CPU.ActiveCfg = Release|Any CPU
+		{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}.Release - VulkanSharp|Any CPU.Build.0 = Release|Any CPU
+		{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD5CAF3A-7A2A-471D-AC25-0AEC36A31409}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

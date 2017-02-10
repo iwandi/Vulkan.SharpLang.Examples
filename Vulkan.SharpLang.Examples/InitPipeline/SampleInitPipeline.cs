@@ -8,7 +8,7 @@ namespace Vulkan.SharpLang.Examples
 	{
 		struct Vertex
 		{
-			public const uint Size = sizeof(float) * 4;
+			public const uint Size = sizeof(float) * 8;
 
 			float posX, posY, posZ, posW; // Position data
 			float r, g, b, a;             // Color
@@ -138,6 +138,8 @@ namespace Vulkan.SharpLang.Examples
 			{
 				new PipelineColorBlendAttachmentState
 				{
+					ColorWriteMask = (ColorComponentFlags)0xF,
+					BlendEnable = false,
 					AlphaBlendOp = BlendOp.Add,
 					ColorBlendOp = BlendOp.Add,
 					SrcColorBlendFactor = BlendFactor.Zero,

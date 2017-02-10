@@ -8,7 +8,7 @@ namespace Vulkan.SharpLang.Examples
 	{
 		struct Vertex
 		{
-			public const uint Size = sizeof(float) * 4;
+			public const uint Size = sizeof(float) * 8;
 
 			float posX, posY, posZ, posW; // Position data
 			float r, g, b, a;             // Color
@@ -77,6 +77,7 @@ namespace Vulkan.SharpLang.Examples
 
 		static void Main(string[] args)
 		{
+
 			SampleInstance sample = new SampleInstance();
 			sample.InitGlobalLayerProperties();
 			sample.InitInstanceeExtensionNames();
@@ -112,7 +113,7 @@ namespace Vulkan.SharpLang.Examples
 			{
 				new ClearValue
 				{
-					Color = new ClearColorValue (new float[] { 0.2f, 0.2f, 0.2f, 0.2f }),
+					Color = new ClearColorValue (new float[] { 0.2f, 0.2f, 0.3f, 0.2f }),
 				},
 				new ClearValue
 				{
@@ -127,14 +128,14 @@ namespace Vulkan.SharpLang.Examples
 			Semaphore imageAcquiredSemaphore = device.CreateSemaphore(new SemaphoreCreateInfo { });
 
 			sample.CurrentBuffer = device.AcquireNextImageKHR(sample.SwapChain, uint.MaxValue, imageAcquiredSemaphore);
-			
+
 			RenderPassBeginInfo rpBegin = new RenderPassBeginInfo
 			{
 				RenderPass = sample.RenderPass,
 				Framebuffer = sample.FrameBuffers[sample.CurrentBuffer],
 				RenderArea = new Rect2D
 				{
-					Extent = new Extent2D {  Width = sample.Width, Height = sample.Height },
+					Extent = new Extent2D { Width = sample.Width, Height = sample.Height },
 					Offset = new Offset2D { X = 0, Y = 0 },
 				},
 				ClearValues = clearValues,
@@ -152,9 +153,9 @@ namespace Vulkan.SharpLang.Examples
 			cmd.CmdEndRenderPass();
 
 			cmd.End();
-			
+
 			Fence drawFence = device.CreateFence(new FenceCreateInfo { });
-			
+
 			SubmitInfo[] submitInfo = new SubmitInfo[]
 			{
 				new SubmitInfo
@@ -184,9 +185,9 @@ namespace Vulkan.SharpLang.Examples
 					device.WaitForFences(new Fence[] { drawFence }, true, FENCE_TIMEOUT);
 					run = false;
 				}
-				catch(ResultException ex)
+				catch (ResultException ex)
 				{
-					if(ex.Result != Result.Timeout)
+					if (ex.Result != Result.Timeout)
 					{
 						Console.WriteLine(ex.Message);
 						Console.WriteLine(ex.StackTrace);
@@ -198,7 +199,7 @@ namespace Vulkan.SharpLang.Examples
 
 			queue.PresentKHR(present);
 
-			System.Threading.Thread.Sleep(10000);
+			System.Threading.Thread.Sleep(100);
 
 			/* VULKAN_KEY_END */
 			device.DestroySemaphore(imageAcquiredSemaphore);

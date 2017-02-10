@@ -189,22 +189,16 @@ namespace Vulkan.SharpLang.Examples
         {
             connection = System.Runtime.InteropServices.Marshal.GetHINSTANCE(this.GetType().Module);
 
-			Size size = new Size((int)width, (int)height);
-
+			Size size = new Size((int)width, (int)height);			
 			window = new Form
 			{
 				Name = appShortName,
 				Text = appShortName,
-				/*Width = size.Width,
-				Height = size.Height,
-				AutoSize = false,
-				MinimumSize = size,
-				MaximumSize = size,*/
 				ClientSize = size,
-			};			
-
-            window.Show();
-
+			};
+			
+			window.Show();
+			
 			return window.Handle;
         }
 
@@ -780,6 +774,8 @@ namespace Vulkan.SharpLang.Examples
 		{
 			float fov = MathHelper.ToRadians(45f);
 			float aspectRatio = 1f;
+			float near = 0.1f;
+			float far = 10f;
 			if(width > height)
 			{
 				aspectRatio = height / width;
@@ -788,16 +784,35 @@ namespace Vulkan.SharpLang.Examples
 			{
 				aspectRatio = width / height;
 			}
-			Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(fov, aspectRatio, 0.1f, 100f);
-			Matrix4x4 view = Matrix4x4.CreateLookAt(new Vector3(-5f, 3f, -10f),
-				new Vector3(0f, 0f, 0f),
-				new Vector3(0f, -1f, 0f));
+			Vector3 camPos = new Vector3(-5f, 3f, -10f);
+			camPos = new Vector3(100f, 0f, 0f);
+			Vector3 camTarget = new Vector3(0f, 0f, 0f);
+			Vector3 camUp = new Vector3(0f, -1f, 0f);
+
+			Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(fov, aspectRatio, near, far);
+			//projection = Matrix4x4.CreateOrthographic(10, 10, near, far);
+			Matrix4x4 view = Matrix4x4.CreateLookAt(camPos, camTarget, camUp);
 			Matrix4x4 model = Matrix4x4.Identity;
 			Matrix4x4 clip = new Matrix4x4(1f, 0f, 0f, 0f,
 				0f, -1f, 0f, 0f,
 				0f, 0f, 0.5f, 0f,
 				0f, 0f, 0.5f, 1.0f);
+
+			Matrix4x4 debugMatrix = new Matrix4x4(2.40833f, 0f, 0.16841f, 0f,
+				-0.08664f, -2.07017f, 1.23908f, 0f,
+				0.05994f, -0.51553f, -0.85712f, 5.64243f,
+				0.05982f, -0.5145f, -0.8554f, 5.83095f);
 			Matrix4x4 mvp = clip * projection * view * model;
+			//mvp = projection * view * model;
+			//mvp = Matrix4x4.Identity;
+			mvp = debugMatrix;
+
+			// convert  row-major to column-major
+			mvp = new Matrix4x4(
+				mvp.M11, mvp.M21, mvp.M31, mvp.M41,
+				mvp.M12, mvp.M22, mvp.M13, mvp.M42,
+				mvp.M13, mvp.M23, mvp.M33, mvp.M43,
+				mvp.M14, mvp.M24, mvp.M34, mvp.M44);
 			uint size = sizeof(float) * 4 * 4;
 			uniformDataBuf = device.CreateBuffer(new BufferCreateInfo
 			{
@@ -1114,8 +1129,8 @@ namespace Vulkan.SharpLang.Examples
 
 			PipelineVertexInputStateCreateInfo vi = new PipelineVertexInputStateCreateInfo
 			{
-				VertexBindingDescriptions = ViBinding,
-				VertexAttributeDescriptions = ViAttribs,
+				VertexBindingDescriptions = viBinding,
+				VertexAttributeDescriptions = viAttribs,
 			};
 
 			PipelineInputAssemblyStateCreateInfo ia = new PipelineInputAssemblyStateCreateInfo
@@ -1137,6 +1152,8 @@ namespace Vulkan.SharpLang.Examples
 			{
 				new PipelineColorBlendAttachmentState
 				{
+					ColorWriteMask = (ColorComponentFlags)0xF,
+					BlendEnable = false,
 					AlphaBlendOp = BlendOp.Add,
 					ColorBlendOp = BlendOp.Add,
 					SrcColorBlendFactor = BlendFactor.Zero,
@@ -1154,25 +1171,8 @@ namespace Vulkan.SharpLang.Examples
 				BlendConstants = new float[] { 1f, 1f, 1f, 1f },
 			};
 
-			/*Viewport viewport = new Viewport
-			{
-				MinDepth = 0f,
-				MaxDepth = 1f,
-				X = 0,
-				Y = 0,
-				Width = width,
-				Height = height,
-			};
-			Rect2D scissor = new Rect2D
-			{
-				Extent = new Extent2D { Width = width, Height = height },
-				Offset = new Offset2D {  X = 0, Y = 0 }
-			};*/
-
 			PipelineViewportStateCreateInfo vp = new PipelineViewportStateCreateInfo
 			{
-				//Viewports = new Viewport[] { viewport  },
-				//Scissors = new Rect2D[] { scissor }
 				ViewportCount = 1,
 				ScissorCount = 1,
 			};
