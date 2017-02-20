@@ -42,11 +42,20 @@ namespace Vulkan.SharpLang.Examples
 			}
 		}
 
+		public IntPtr Handle
+		{
+			get
+			{
+				return window.Handle;
+			}
+		}
+
 		public WindowsWindow(WindowInfo info)
 		{
 			window = new Form();
 			this.Info = info;
 			window.Show();
+			//window.WindowState = FormWindowState.Minimized;
 		}
 
 		public void Destroy()

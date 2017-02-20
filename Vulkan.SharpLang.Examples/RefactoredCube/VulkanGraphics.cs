@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Vulkan;
+using Vulkan.Windows;
 
 namespace Vulkan.SharpLang.Examples
 {
@@ -18,8 +19,16 @@ namespace Vulkan.SharpLang.Examples
 		VulkanQueue queueCompute;
 		VulkanQueue queueTransfer;
 
+		VulkanMemoryManager memory;
+
+
+		public IGraphicsQueue QueueGraphics { get { return queueGraphics; } }
+		public IGraphicsQueue QueueCompute { get { return queueCompute; } }
+		public IGraphicsQueue QueueTransfer { get { return queueTransfer; } }
+
 		public void Init(AppInfo info)
 		{
+			// TODO : Check if extentions Exists
 			List<string> extensions = new List<string>();
 			extensions.Add("VK_KHR_surface");
 			extensions.Add("VK_KHR_win32_surface");
@@ -70,6 +79,8 @@ namespace Vulkan.SharpLang.Examples
 			queueTransfer = CreateQueue(GraphicsQueueType.Transfer);
 			device = CreateDevice(gpu);
 			InitQueues();
+
+			memory = new VulkanMemoryManager(gpu, device);
 		}
 
 		PhysicalDevice SelectPhysicalDevice()
@@ -82,6 +93,8 @@ namespace Vulkan.SharpLang.Examples
 
 		Device CreateDevice(PhysicalDevice gpu)
 		{
+			// TODO : we need a presentationSurface a this point
+
 			DeviceQueueCreateInfoFactory queueFactory = new DeviceQueueCreateInfoFactory(gpu);			
 ;
 			for(int i = 0; i < queues.Count; i++)
@@ -110,6 +123,10 @@ namespace Vulkan.SharpLang.Examples
 
 		public void Destroy()
 		{
+			queueGraphics.Destroy(device);
+			queueCompute.Destroy(device);
+			queueTransfer.Destroy(device);
+
 			device.Destroy();
 			instance.Destroy();
 
@@ -119,31 +136,103 @@ namespace Vulkan.SharpLang.Examples
 			instance = null;
 		}
 
-
 		public ISwapChain CreateSwapChain(IWindow window)
 		{
-			return null;
+			WindowsWindow wWindow = window as WindowsWindow;
+			if (wWindow != null)
+			{
+				VulkanSwapChain swapChain =  new VulkanSwapChain(instance.CreateWin32SurfaceKHR(new Win32SurfaceCreateInfoKhr
+				{
+					Hinstance = System.Runtime.InteropServices.Marshal.GetHINSTANCE(this.GetType().Module),
+					Hwnd = wWindow.Handle,
+				}));
+				swapChain.Init(gpu, device, memory, queueGraphics, (uint)window.Info.ContentWidth, (uint)window.Info.ContentHeight);
+
+				return swapChain;
+			}
+			else
+			{
+				throw new Exception("invalid window type");
+			}
 		}
 
-		public void UpdatePresentationSurface(ISwapChain surface, IWindow window)
+		public void DestroySwapChain(ISwapChain swapChain)
 		{
-
+			VulkanSwapChain vkSwapChain = swapChain as VulkanSwapChain;
+			if (vkSwapChain != null)
+			{
+				vkSwapChain.Destroy(instance, device, memory);
+				vkSwapChain = null;
+			}
 		}
 
-		public void DestroySwapChain(ISwapChain swapChian)
+		public IPipelineState CreatePipelineState()
 		{
-
+			return new VulkanPipelineState(device);
 		}
 
-
-		public void NextFrame(ISwapChain swapChian)
+		public void DestroyPipelineState(IPipelineState pipelineState)
 		{
-
+			VulkanPipelineState vkPupelineState = pipelineState as VulkanPipelineState;
+			if(vkPupelineState != null)
+			{
+				vkPupelineState.Destroy();
+			}
 		}
 
-		public void PresentFrame(ISwapChain swapChian)
+		public IBuffer<T> CreateVertexBuffer<T>(int lenght) where T : struct
 		{
+			return new VulkanDataBuffer<T>(device, memory, (uint)lenght, BufferUsageFlags.VertexBuffer);
+		}
 
+		public IBuffer<T> CreateUniformBuffer<T>() where T : struct
+		{
+			return new VulkanDataBuffer<T>(device, memory, 1, BufferUsageFlags.UniformBuffer);
+		}
+
+		public void DestroyBuffer(IBuffer buffer)
+		{
+			VulkanDataBuffer vkBuffer = buffer as VulkanDataBuffer;
+			if (vkBuffer != null)
+			{
+				vkBuffer.Destroy();
+				vkBuffer = null;
+			}
+		}
+
+		public uint[] LoadSpvFile(string path)
+		{
+			byte[] data = System.IO.File.ReadAllBytes(path);
+			uint[] spv = new uint[data.Length / 4];
+
+			System.Buffer.BlockCopy(data, 0, spv, 0, data.Length);
+
+			return spv;
+		}
+
+		public IShader LoadShader(string fileName, string function, ShaderType type)
+		{
+			uint[] spv = LoadSpvFile(fileName);
+			ShaderModule module = device.CreateShaderModule(new ShaderModuleCreateInfo
+			{
+				Code = spv,
+			});
+			PipelineShaderStageCreateInfo info = new PipelineShaderStageCreateInfo
+			{
+				Stage = VulkanHelper.ToShaderStageFlags(type),
+				Name = function,
+				Module = module,
+			};
+			return new VulkanShader(module, info);
+		}
+
+		public void DestroyShader(IShader shader)
+		{
+			VulkanShader vkShader = shader as VulkanShader;
+			if(vkShader != null)
+			{
+				vkShader.Destroy(device);
+			}
 		}
 
 		protected class DeviceQueueCreateInfoFactory

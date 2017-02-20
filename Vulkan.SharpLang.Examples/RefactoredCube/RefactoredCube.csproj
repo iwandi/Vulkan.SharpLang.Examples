@@ -51,6 +51,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.3.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -66,14 +71,28 @@
     <Compile Include="Interfaces.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VulkanAlloc.cs" />
+    <Compile Include="VulkanDataBuffer.cs" />
     <Compile Include="VulkanGraphics.cs" />
     <Compile Include="VulkanHelper.cs" />
+    <Compile Include="VulkanImage.cs" />
+    <Compile Include="VulkanMemoryManager.cs" />
+    <Compile Include="VulkanPipelineState.cs" />
     <Compile Include="VulkanQueue.cs" />
+    <Compile Include="VulkanShader.cs" />
+    <Compile Include="VulkanSwapChain.cs" />
     <Compile Include="WindowsAppHost.cs" />
     <Compile Include="WindowsWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="basicShader.frag.spv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="basicShader.vert.spv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
